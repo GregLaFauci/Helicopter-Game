@@ -1,0 +1,18 @@
+#body {
+    background-color: black;
+    
+}
+
+#gameView {
+    margin: 0 auto;
+    position: relative;
+    width: 90vw;
+    height: 100vh;
+}
+
+#gameScreen{ 
+    border: 5px solid black;
+    border-radius: 50px; 
+    background-image: url("/assets/starfield.png");
+    background-color: darkblue;
+}
