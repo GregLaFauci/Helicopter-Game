@@ -48,7 +48,7 @@ class Background {
     );
 
     this.move = function () {
-      this.xPos += this.speed;
+      if(!isPause) this.xPos += this.speed;
     };
     this.move();
     if (this.xPos < -1400) {
