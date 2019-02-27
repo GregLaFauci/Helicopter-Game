@@ -93,14 +93,17 @@ let gravity = 2;
 let score = 0;
 let fireballs = [];
 let missiles = [];
-let isPause = false;
+let isPause = true;
 
 //Set image sources
 missile.src = "assets/missile.png";
 helicopter.src = "assets/helicopter.png";
 fireball.src = "assets/fireball.png";
 
-setInterval(()=> fireballs.push(new Fireball()), 2000);
+setInterval(()=>{
+  if(isPause)return;
+  fireballs.push(new Fireball());
+} , 2000);
 
 /*======================
         THE GAME
@@ -192,6 +195,11 @@ document.addEventListener('keydown',
       default:
         break;
     }
+  });
+  //on play click start game
+  document.querySelector('#gameStartModal>#close').addEventListener('click',()=>{
+    isPause=!isPause;
+    document.querySelector('#gameStartModal').style.display = "none";
   });
 
 /* =====================
