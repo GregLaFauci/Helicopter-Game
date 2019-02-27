@@ -13,6 +13,6 @@
 #gameScreen{ 
     border: 5px solid black;
     border-radius: 50px; 
-    background-image: url("/assets/starfield.png");
+    background-image: url("../assets/starfield.png");
     background-color: darkblue;
 }
