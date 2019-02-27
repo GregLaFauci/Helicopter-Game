@@ -69,8 +69,8 @@ function Fireball() {
 let Chopper = {
   x: 150,
   y: 150,
-  height: 300,
-  width: 92
+  height: 92,
+  width: 300
 };
 //missile object
 function Missile() {
@@ -78,6 +78,14 @@ function Missile() {
   this.y = Chopper.y + 40;
   this.height = missile.height;
   this.width = missile.width;
+}
+
+//laser object
+function Laser() {
+  this.x = Chopper.x + helicopter.width - 25;
+  this.y = Chopper.y + 40;
+  this.height = laser.height;
+  this.width = laser.width;
 }
 
 /*======================
@@ -88,17 +96,23 @@ let ctx = myCanvas.getContext('2d');
 let background = new Background();
 let helicopter = new Image();
 let missile = new Image();
+let laser = new Image();
 let fireball = new Image();
+let explosion = new Image();
 let gravity = 2;
 let score = 0;
+let missileCount = 10;
 let fireballs = [];
 let missiles = [];
+let lasers = [];
 let isPause = true;
 
 //Set image sources
 missile.src = "assets/missile.png";
+laser.src = "assets/laser.png";
 helicopter.src = "assets/helicopter.png";
 fireball.src = "assets/fireball.png";
+explosion.src = "assets/regularExplosion01.png";
 
 setInterval(()=>{
   if(isPause)return;
@@ -112,7 +126,6 @@ function startGame() {
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   background.draw(ctx);
   ctx.drawImage(helicopter, Chopper.x, Chopper.y);
-
 
   for (let fire of fireballs) {
     ctx.drawImage(fireball, fire.x, fire.y);
@@ -135,6 +148,21 @@ function startGame() {
       }
       e.x += 10;
       if (isCollide(e, fire)) {
+        ctx.drawImage(explosion,e.x,e.y);
+        missileCount++;
+        deleteObject(e);
+        deleteObject(fire);
+        addScore();
+      }
+    });
+    lasers.forEach(e => {
+      ctx.drawImage(laser, e.x, e.y);
+      if (e.x > myCanvas.width) {
+        deleteObject(e);
+      }
+      e.x += 10;
+      if (isCollide(e, fire)) {
+        ctx.drawImage(explosion,e.x,e.y);
         deleteObject(e);
         deleteObject(fire);
         addScore();
@@ -144,6 +172,9 @@ function startGame() {
 
 
   if (Chopper.y + 50 >= myCanvas.height) {
+    ctx.drawImage(explosion,Chopper.x,Chopper.y);
+    ctx.drawImage(explosion,Chopper.x+Chopper.width,Chopper.y);
+    ctx.drawImage(explosion,Chopper.x+Chopper.width/2,Chopper.y);
     alert(`GAME OVER\n\nSCORE: ${score}`);
     refresh();
   }
@@ -155,6 +186,7 @@ function startGame() {
   ctx.font = "26px Verdana";
   ctx.fillStyle = "#FFFFFF";
   ctx.fillText("Score : " + score, myCanvas.width - 150, myCanvas.height - 20);
+  ctx.fillText("Missles : " + missileCount, 50, myCanvas.height - 20);
 
   requestAnimationFrame(startGame);
 
@@ -163,9 +195,8 @@ function startGame() {
      EVENT LISTENERS
 ======================*/
 document.addEventListener('keydown',
-  function (event) {
-
-    switch (event.keyCode) {
+  function (e) {
+    switch (e.keyCode) {
       case 38:
         //keyCode 38 is arrow up
         Chopper.y -= 25;
@@ -173,18 +204,21 @@ document.addEventListener('keydown',
 
       case 40:
         //keyCode 40 is arrow down
-
+         Chopper.y += 25;
         break;
 
       case 37:
         //keyCode 37 is arrow left
         //FIRE MISSILE
+        if(missileCount==0)break;
         missiles.push(new Missile());
+        missileCount--;
         break;
 
       case 39:
         //keyCode 39 is arrow right
         //FIRE LASER
+        lasers.push(new Laser());
         break;
       
       case 80:
@@ -201,6 +235,8 @@ document.addEventListener('keydown',
     isPause=!isPause;
     document.querySelector('#gameStartModal').style.display = "none";
   });
+  //pause game when window out of focus
+  window.addEventListener('blur',()=>isPause = true);
 
 /* =====================
      UTILITY FUNCTIONS
@@ -233,6 +269,7 @@ function addScore(){
 function refresh(){
   score=0;
   missiles=[];
+  missileCount =10;
   fireballs=[];
   Chopper.x = 150;
   Chopper.y = 150;
