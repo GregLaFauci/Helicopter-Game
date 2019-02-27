@@ -204,7 +204,7 @@ function startGame() {
   ctx.font = "26px Verdana";
   ctx.fillStyle = "#FFFFFF";
   ctx.fillText("Score : " + score, myCanvas.width - 150, myCanvas.height - 20);
-  ctx.fillText("Missles : " + missileCount, 50, myCanvas.height - 20);
+  ctx.fillText("Missiles : " + missileCount, 50, myCanvas.height - 20);
 
   requestAnimationFrame(startGame);
 
