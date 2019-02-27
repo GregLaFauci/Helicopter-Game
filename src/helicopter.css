@@ -3,7 +3,6 @@ html, body {
 }
 
 #gameView {
-    box-shadow: 20px 20px 10px whitesmoke;
     border-radius: 50px; 
     margin: 0 auto;
     position: relative;
