@@ -99,6 +99,10 @@ let missile = new Image();
 let laser = new Image();
 let fireball = new Image();
 let explosion = new Image();
+let laserSound = new Audio("assets/Laser_Machine_Gun.mp3");
+let missileSound = new Audio("assets/MissileFireWar.mp3");
+let explosionCrashSound = new Audio("assets/Explosion_Crash.mp3");
+let explosionMissileSound = new Audio("assets/BigBomb.mp3");
 let gravity = 2;
 let score = 0;
 let missileCount = 10;
@@ -114,9 +118,19 @@ helicopter.src = "assets/helicopter.png";
 fireball.src = "assets/fireball.png";
 explosion.src = "assets/regularExplosion01.png";
 
+//starts shooting fireballs
 setInterval(()=>{
   if(isPause)return;
-  fireballs.push(new Fireball());
+  //increase game difficulty
+  if(score>5 && score<10 && fireballs.length<3){
+    generateFireball(3);
+  }else if(score>10 && score<15 && fireballs.length<4){
+    generateFireball(4);
+  }else if(score>15 && fireballs.length<6){
+    generateFireball(5);
+  }else{
+    generateFireball(1);
+  }
 } , 2000);
 
 /*======================
@@ -132,6 +146,7 @@ function startGame() {
     if(isPause) continue;//if game is pause dont move fireballs
     fire.x -= 10;
     if (isCollide(Chopper, fire)) {
+      explosionCrashSound.play();
       alert(`GAME OVER\n\nSCORE: ${score}`);
       refresh();
     }
@@ -149,6 +164,7 @@ function startGame() {
       e.x += 10;
       if (isCollide(e, fire)) {
         ctx.drawImage(explosion,e.x,e.y);
+        explosionMissileSound.play();
         missileCount++;
         deleteObject(e);
         deleteObject(fire);
@@ -163,6 +179,7 @@ function startGame() {
       e.x += 10;
       if (isCollide(e, fire)) {
         ctx.drawImage(explosion,e.x,e.y);
+        explosionMissileSound.play();
         deleteObject(e);
         deleteObject(fire);
         addScore();
@@ -175,6 +192,7 @@ function startGame() {
     ctx.drawImage(explosion,Chopper.x,Chopper.y);
     ctx.drawImage(explosion,Chopper.x+Chopper.width,Chopper.y);
     ctx.drawImage(explosion,Chopper.x+Chopper.width/2,Chopper.y);
+    explosionCrashSound.play();
     alert(`GAME OVER\n\nSCORE: ${score}`);
     refresh();
   }
@@ -212,6 +230,7 @@ document.addEventListener('keydown',
         //FIRE MISSILE
         if(missileCount==0)break;
         missiles.push(new Missile());
+        missileSound.play();
         missileCount--;
         break;
 
@@ -219,6 +238,7 @@ document.addEventListener('keydown',
         //keyCode 39 is arrow right
         //FIRE LASER
         lasers.push(new Laser());
+        laserSound.play();
         break;
       
       case 80:
@@ -273,6 +293,15 @@ function refresh(){
   fireballs=[];
   Chopper.x = 150;
   Chopper.y = 150;
+}
+
+//generates Fireballs
+function generateFireball(x){
+  for(let i=0;i<x;i++){
+    let f = new Fireball();
+    f.x = (Math.random()*myCanvas.width+200)+myCanvas.width;
+    fireballs.push(f);
+  }
 }
 
 startGame();
