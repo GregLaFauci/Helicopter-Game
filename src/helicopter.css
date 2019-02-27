@@ -3,6 +3,8 @@ html, body {
 }
 
 #gameView {
+    box-shadow: 20px 20px 10px whitesmoke;
+    border-radius: 50px; 
     margin: 0 auto;
     position: relative;
     width: 90vw;
@@ -29,9 +31,9 @@ html, body {
     background-position: center;
     background-repeat: no-repeat;
     position: absolute;
-    top: 5vh;
+    top: 15vh;
     left: 10vw;
-    height: 70vh;
+    height: 650px;
     width: 80vw;
     z-index: 5;
     text-align: center;

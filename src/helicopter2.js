@@ -67,7 +67,7 @@ function Fireball() {
 
 //helicopter object
 let Chopper = {
-  x: 150,
+  x: 250,
   y: 150,
   height: 92,
   width: 300
@@ -121,9 +121,7 @@ var sonicBoom7 = new Image();
 var sonicBoom8 = new Image();
 var sonicBoom9 = new Image();
 
-
-
-
+let themeMusic = new Audio("assets/themeMusic.mp3");
 let laserSound = new Audio("assets/Laser_Machine_Gun.mp3");
 let missileSound = new Audio("assets/MissileFireWar.mp3");
 let explosionCrashSound = new Audio("assets/Explosion_Crash.mp3");
@@ -136,15 +134,12 @@ let fireballs = [];
 let missiles = [];
 let lasers = [];
 let isPause = true;
+let start,stop;
 
 //Set image sources
 missile.src = "assets/missile.png";
 laser.src = "assets/laser.png";
 helicopter.src = "assets/helicopter.png";
-
-// helicopter.src = "assets/apache2.png";
-
-
 fireball.src = "assets/fireball.png";
 explosion.src = "assets/regularExplosion01.png";
 
@@ -182,13 +177,17 @@ setInterval(()=>{
   }
 } , 2000);
 
+
+
 /*======================
         THE GAME
 ======================*/
 function startGame() {
+  
+  playGameSong();
+  
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   cx.clearRect(0,0,myCanvas.width,myCanvas.height);
-
 
   background.draw(ctx);
   ctx.drawImage(helicopter, Chopper.x, Chopper.y);
@@ -211,8 +210,9 @@ function startGame() {
       ctx.drawImage(boom9,Chopper.x + Chopper.width, Chopper.y);
 
 
-      alert(`GAME OVER\n\nSCORE: ${score}`);
-      refresh();
+      // alert(`GAME OVER\n\nSCORE: ${score}`);
+      // refresh();
+      gameOver();
     }
 
     //delete fireball after passes screen
@@ -293,8 +293,9 @@ function startGame() {
     // ctx.drawImage(explosion,Chopper.x+Chopper.width/2,Chopper.y);
 
     explosionCrashSound.play();
-    alert(`GAME OVER\n\nSCORE: ${score}`);
-    refresh();
+    // alert(`GAME OVER\n\nSCORE: ${score}`);
+    // refresh();
+    gameOver();
   }
   if (Chopper.y <= 0) {
     Chopper.y += gravity * 2;
@@ -313,8 +314,9 @@ function startGame() {
     ctx.drawImage(sonicBoom9,Chopper.x, Chopper.y);
 
     explosionCrashSound.play();
-    alert(`GAME OVER\n\nSCORE: ${score}`);
-    refresh(); 
+    // alert(`GAME OVER\n\nSCORE: ${score}`);
+    // refresh(); 
+    gameOver();
 
 }
 
@@ -330,13 +332,14 @@ function startGame() {
   cx.fillText("Score : " + score, myCanvas.width - 150, myCanvas.height - 20);
   cx.fillText("Missiles : " + missileCount, 50, myCanvas.height - 20);
 
-  requestAnimationFrame(startGame);
+  start = requestAnimationFrame(startGame);
 }
 /*======================
      EVENT LISTENERS
 ======================*/
 document.addEventListener('keydown',
   function (e) {
+    if(isPause) return;
     switch (e.keyCode) {
       case 38:
         //keyCode 38 is arrow up
@@ -360,7 +363,6 @@ document.addEventListener('keydown',
 
         case 76:
         // keyCode 76 is 'l' for laser
-
         //FIRE LASER
         lasers.push(new Laser());
         laserSound.play();
@@ -417,9 +419,6 @@ function deleteObject(a) {
   }
 }
 function addScore(x){
-//how to differentiate between 1 point for fireball passing, or 5 points for shooting fireball
-
-
   score+=x;
 }
 //restarts the game
@@ -439,6 +438,24 @@ function generateFireball(x){
     f.x = (Math.random()*myCanvas.width+200)+myCanvas.width;
     fireballs.push(f);
   }
+}
+
+//game over
+function gameOver(){
+  cancelAnimationFrame(start);
+  cx.clearRect(0,0,myCanvas.width,myCanvas.height);
+  cx.font = "40px Verdana";
+  cx.fillStyle = "#FF0000";
+  cx.fillText("GAME OVER!!", myCanvas.width/2-200, myCanvas.height/3);
+  cx.fillText("Score : " + score, myCanvas.width/2-200, myCanvas.height/2);
+  cx.fillStyle = "#00FF00";
+  cx.fillRect(myCanvas.width/2+100,myCanvas.height/2+150,100,50);
+  isPause = true;
+  stop = requestAnimationFrame(gameOver);
+}
+
+function playGameSong(){
+  !isPause ? themeMusic.play() : themeMusic.pause();
 }
 
 startGame();
