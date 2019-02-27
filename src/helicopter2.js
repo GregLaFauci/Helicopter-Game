@@ -102,32 +102,43 @@ let missile = new Image();
 let laser = new Image();
 let fireball = new Image();
 let explosion = new Image();
-var boom1 = new Image();
-var boom2 = new Image();
-var boom3 = new Image();
-var boom4 = new Image();
-var boom5 = new Image();
-var boom6 = new Image();
-var boom7 = new Image();
-var boom8 = new Image();
-var boom9 = new Image();
-var sonicBoom1 = new Image();
-var sonicBoom2 = new Image();
-var sonicBoom3 = new Image();
-var sonicBoom4 = new Image();
-var sonicBoom5 = new Image();
-var sonicBoom6 = new Image();
-var sonicBoom7 = new Image();
-var sonicBoom8 = new Image();
-var sonicBoom9 = new Image();
+
+var boom = [];
+for(let i = 0; i <= 8; i++){
+  boom[i] = new Image();
+} 
+
+// var boom1 = new Image();
+// var boom2 = new Image();
+// var boom3 = new Image();
+// var boom4 = new Image();
+// var boom5 = new Image();
+// var boom6 = new Image();
+// var boom7 = new Image();
+// var boom8 = new Image();
+// var boom9 = new Image();
+
+var sonicBoom = [];
+for(let i = 0; i <= 8; i++){
+  sonicBoom[i] = new Image();
+} 
+// var sonicBoom1 = new Image();
+// var sonicBoom2 = new Image();
+// var sonicBoom3 = new Image();
+// var sonicBoom4 = new Image();
+// var sonicBoom5 = new Image();
+// var sonicBoom6 = new Image();
+// var sonicBoom7 = new Image();
+// var sonicBoom8 = new Image();
+// var sonicBoom9 = new Image();
 
 let themeMusic = new Audio("assets/themeMusic.mp3");
 let laserSound = new Audio("assets/Laser_Machine_Gun.mp3");
 let missileSound = new Audio("assets/MissileFireWar.mp3");
 let explosionCrashSound = new Audio("assets/Explosion_Crash.mp3");
 let explosionMissileSound = new Audio("assets/BigBomb.mp3");
-let gravity = 2;
-var gForce = 1;
+let gravity = 1.5;
+var gForce = .5;
 let score = 0;
 let missileCount = 10;
 let fireballs = [];
@@ -145,24 +156,33 @@ helicopter.src = "assets/apache.png";
 fireball.src = "assets/fireball.png";
 explosion.src = "assets/regularExplosion01.png";
 
-boom1.src="/assets/regularExplosion00.png";
-boom2.src="/assets/regularExplosion01.png";
-boom3.src="/assets/regularExplosion02.png";
-boom4.src="/assets/regularExplosion03.png";
-boom5.src="/assets/regularExplosion04.png";
-boom6.src="/assets/regularExplosion05.png";
-boom7.src="/assets/regularExplosion06.png";
-boom8.src="/assets/regularExplosion07.png";
-boom9.src="/assets/regularExplosion08.png";
-sonicBoom1.src="/assets/sonicExplosion00.png";
-sonicBoom2.src="/assets/sonicExplosion01.png";
-sonicBoom3.src="/assets/sonicExplosion02.png";
-sonicBoom4.src="/assets/sonicExplosion03.png";
-sonicBoom5.src="/assets/sonicExplosion04.png";
-sonicBoom6.src="/assets/sonicExplosion05.png";
-sonicBoom7.src="/assets/sonicExplosion06.png";
-sonicBoom8.src="/assets/sonicExplosion07.png";
-sonicBoom9.src="/assets/sonicExplosion08.png";
+for(let i =0; i<=8;i++){
+boom[i].src=`assets/regularExplosion0${i}.png`;
+}
+
+// boom1.src="/assets/regularExplosion00.png";
+// boom2.src="/assets/regularExplosion01.png";
+// boom3.src="/assets/regularExplosion02.png";
+// boom4.src="/assets/regularExplosion03.png";
+// boom5.src="/assets/regularExplosion04.png";
+// boom6.src="/assets/regularExplosion05.png";
+// boom7.src="/assets/regularExplosion06.png";
+// boom8.src="/assets/regularExplosion07.png";
+// boom9.src="/assets/regularExplosion08.png";
+
+for(let i =0; i<=8;i++){
+  sonicBoom[i].src=`assets/sonicExplosion0${i}.png`;
+  }
+
+// sonicBoom1.src="/assets/sonicExplosion00.png";
+// sonicBoom2.src="/assets/sonicExplosion01.png";
+// sonicBoom3.src="/assets/sonicExplosion02.png";
+// sonicBoom4.src="/assets/sonicExplosion03.png";
+// sonicBoom5.src="/assets/sonicExplosion04.png";
+// sonicBoom6.src="/assets/sonicExplosion05.png";
+// sonicBoom7.src="/assets/sonicExplosion06.png";
+// sonicBoom8.src="/assets/sonicExplosion07.png";
+// sonicBoom9.src="/assets/sonicExplosion08.png";
 
 //starts shooting fireballs
 setInterval(()=>{
@@ -202,7 +222,7 @@ function startGame() {
     if (isCollide(Chopper, fire)) {
       explosionCrashSound.play();
 
-      for(let i = 1; i <=9;i++) {
+      for(let i = 0; i <=8;i++) {
         ctx.drawImage(boom[i],Chopper.x + Chopper.width, Chopper.y);
       }
 
@@ -238,7 +258,7 @@ function startGame() {
       if (isCollide(e, fire)) {
         // ctx.drawImage(explosion,e.x,e.y);
 
-        for(let i = 1; i <=9;i++) {
+        for(let i = 0; i <=8;i++) {
           ctx.drawImage(sonicBoom[i],fire.x, fire.y);
         }
 
@@ -271,7 +291,7 @@ function startGame() {
 
         // ctx.drawImage(explosion,e.x,e.y);
 
-        for(let i = 1; i <=9;i++) {
+        for(let i = 0; i <=8;i++) {
           ctx.drawImage(sonicBoom[i],fire.x, fire.y);
         }
 
@@ -297,7 +317,7 @@ function startGame() {
 
   if (Chopper.y + 50 >= myCanvas.height) {
 
-    for(let i = 1; i <=9;i++) {
+    for(let i = 0; i <=8;i++) {
       ctx.drawImage(sonicBoom[i],Chopper.x, Chopper.y);
     }
 
@@ -327,7 +347,7 @@ function startGame() {
 
   if(Chopper.x <= 0){
 
-    for(let i = 1; i <=9;i++) {
+    for(let i = 0; i <=8;i++) {
       ctx.drawImage(sonicBoom[i],Chopper.x, Chopper.y);
     }
 
