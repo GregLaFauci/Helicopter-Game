@@ -1,6 +1,5 @@
-#body {
-    background-color: black;
-    
+html, body {
+    background-color: midnightblue;
 }
 
 #gameView {
@@ -17,8 +16,18 @@
     background-color: darkblue;
 }
 
+#gameHeader {
+    color: white;
+    text-align: center;
+}
+
+
 #gameStartModal{
     background-color: rgba(200, 200, 200, .8);
+    background: rgba(230, 18, 18, 0.8) url("../assets/CrosshairPic.png");
+    background-size: 500px;
+    background-position: center;
+    background-repeat: no-repeat;
     position: absolute;
     top: 5vh;
     left: 10vw;
