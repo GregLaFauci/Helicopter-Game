@@ -141,7 +141,8 @@ function startGame() {
 
 
   if (Chopper.y + 50 >= myCanvas.height) {
-    location.reload(); //Crash 
+    alert(`GAME OVER\n\nSCORE: ${score}`);
+    refresh();
   }
   if (Chopper.y <= 0) {
     Chopper.y += gravity * 2;
