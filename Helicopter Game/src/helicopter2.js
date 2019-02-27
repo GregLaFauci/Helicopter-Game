@@ -207,7 +207,6 @@ function startGame() {
   ctx.fillText("Missiles : " + missileCount, 50, myCanvas.height - 20);
 
   requestAnimationFrame(startGame);
-
 }
 /*======================
      EVENT LISTENERS
