@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Helicopter Game</title>
+    <link href="src/helicopter.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="gameView">
+        <canvas id="gameScreen" width="1300" height="700" style="position: absolute; left: 0; top: 0; z-index: 0" ;>
+            Browser does not support canvas.
+        </canvas>
+        <canvas id="scoreScreen" width="1300" height="700" style="position: absolute; left: 0; top: 0; z-index: 1" ;>
+            Browser does not support canvas
+        </canvas>
+    </div>
+
+    <div id="gameStartModal">
+        <h1>How to Play</h1>
+        <p>Here's your controls. We hope you have some fun with it.</p>
+        <ul>
+            <li><i class="fas fa-arrow-up">  Move Up</i></li>
+            <li><i class="fas fa-arrow-down">  Move Down</i></li>
+            <li><i class="fas fa-arrow-right">  Fire Laser</i></li>
+            <li><i class="fas fa-arrow-left"></i>  Fire Missile</li>
+        </ul>
+        <h3 id="close">PLAY</h3>
+    </div>
+
+
+    <script src="src/helicopter2.js"></script>
+</body>
+
+</html>
