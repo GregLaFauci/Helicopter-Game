@@ -150,7 +150,7 @@ let start,stop;
 missile.src = "assets/missile.png";
 laser.src = "assets/laser.png";
 // helicopter.src = "assets/apache.png";
-helicopter.src = "assets/ARC-1701.png";
+helicopter.src = "assets/Valor-class_cruiser.png";
 satelliteImg.src = "assets/satellite.png";
 
 fireball.src = "assets/fireball.png";
@@ -470,6 +470,9 @@ function deleteObject(a) {
     return;
   } else if (a instanceof Fireball) {
     fireballs.splice(fireballs.indexOf(a), 1);
+    return;
+  } else if (a instanceof Satellite) {
+    satellites.splice(satellites.indexOf(a), 1);
     return;
   }
 }
