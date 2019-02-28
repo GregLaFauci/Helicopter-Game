@@ -105,7 +105,7 @@ let ctx = myCanvas.getContext('2d');
 let myScoreCanvas = document.getElementById('scoreScreen');
 let cx = myScoreCanvas.getContext('2d');
 let myWeatherCanvas = document.getElementById('weather');
-let cwx = myWeatherCanvas.getContext('2d');
+let weatherContext = myWeatherCanvas.getContext('2d');
 let background = new Background();
 let helicopter = new Image();
 let missile = new Image();
@@ -155,17 +155,28 @@ setInterval(()=>{
   }else if(score>15 && fireballs.length<6){
     generateFireball(5);
   }else if(score>25 && missileCount < 2){
-    generateMissilePack(1);
+    generateMissilePack(1); 
   }else{
     generateFireball(1);
   }
 } , 2000);
 
 
+
+
 /*======================
         THE GAME
 ======================*/
 function startGame() {
+
+
+//change background as score increases
+if(score>50)  myCanvas.style.backgroundImage = "url('../assets/starfield.png')";
+if(score>100) myCanvas.style.backgroundImage = "url('../assets/8bitadevnture_cover-9784.jpeg')";
+if(score>150) myCanvas.style.backgroundImage = "url('../assets/starfield.png')";
+if(score>200) myCanvas.style.backgroundImage = "url('../assets/8bitadevnture_cover-9784.jpeg')";
+
+
   
   playGameSong();
   
@@ -434,12 +445,13 @@ function playGameSong(){
 }
 
   
- 
+
+//make it rain
 var w = myWeatherCanvas.width;
 var h = myWeatherCanvas.height;
-cwx.strokeStyle = 'rgba(174,194,224,0.5)';
-cwx.lineWidth = 1;
-cwx.lineCap = 'round';
+weatherContext.strokeStyle = 'rgba(174,194,224,0.5)';
+weatherContext.lineWidth = 1;
+weatherContext.lineCap = 'round';
 
 
 var init = [];
@@ -460,13 +472,13 @@ for(var b = 0; b < maxParts; b++) {
 }
 
 function draw() {
-  cwx.clearRect(0, 0, w, h);
+  weatherContext.clearRect(0, 0, w, h);
   for(var c = 0; c < particles.length; c++) {
     var p = particles[c];
-    cwx.beginPath();
-    cwx.moveTo(p.x, p.y);
-    cwx.lineTo(p.x + p.l * p.xs, p.y + p.l * p.ys);
-    cwx.stroke();
+    weatherContext.beginPath();
+    weatherContext.moveTo(p.x, p.y);
+    weatherContext.lineTo(p.x + p.l * p.xs, p.y + p.l * p.ys);
+    weatherContext.stroke();
   }
   move();
 }
@@ -486,27 +498,5 @@ function move() {
 setInterval(draw, 30);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// startGame()
 startGame();

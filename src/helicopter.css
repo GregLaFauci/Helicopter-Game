@@ -13,7 +13,9 @@ html, body {
 #gameScreen{ 
     border: 5px solid black;
     border-radius: 50px; 
-    background-image: url("../assets/starfield.png");
+    background-image: url("../assets/8bitadevnture_cover-9784.jpeg");
+    background-repeat: no-repeat;
+    background-size: 100%;
     background-color: darkblue;
 }
 
