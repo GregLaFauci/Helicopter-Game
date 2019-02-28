@@ -11,7 +11,7 @@ const DEFAULTS = {
   SPEED: -1
 };
 
-//backgroun object
+//background object
 class Background {
   constructor(options = {}) {
     this.xPos = DEFAULTS.X_POS;
@@ -22,17 +22,17 @@ class Background {
   }
 
   draw(ctx) {
-    const imageRepository = new function () {
+    const mountain = new function () {
       this.background = new Image();
       this.background.src = "assets/mountain.png";
     }();
-    const imageRepositoryFlip = new function () {
+    const mountainFlip = new function () {
       this.background = new Image();
       this.background.src = "assets/mountainFlip.png";
     }();
 
     ctx.drawImage(
-      imageRepository.background,
+      mountain.background,
       this.xPos,
       this.yPos,
       this.width,
@@ -40,7 +40,7 @@ class Background {
     );
 
     ctx.drawImage(
-      imageRepositoryFlip.background,
+      mountainFlip.background,
       this.xPos + this.width,
       this.yPos,
       this.width,
@@ -69,8 +69,8 @@ function Fireball() {
 let Chopper = {
   x: 250,
   y: 150,
-  height: 92,
-  width: 300
+  height: 71,
+  width: 200
 };
 
 //missile object
@@ -80,6 +80,16 @@ function Missile() {
   this.height = missile.height;
   this.width = missile.width;
 }
+
+//missile pack object
+function MissilePack() {
+  this.x = myCanvas.width;
+  this.y = Math.random() * myCanvas.height;
+  this.height = missilePack.height;
+  this.width = missilePack.width;
+}
+
+
 
 //laser object
 function Laser() {
@@ -102,35 +112,17 @@ let missile = new Image();
 let laser = new Image();
 let fireball = new Image();
 let explosion = new Image();
+let missilePack = new Image();
 
 var boom = [];
 for(let i = 0; i <= 8; i++){
   boom[i] = new Image();
 } 
 
-// var boom1 = new Image();
-// var boom2 = new Image();
-// var boom3 = new Image();
-// var boom4 = new Image();
-// var boom5 = new Image();
-// var boom6 = new Image();
-// var boom7 = new Image();
-// var boom8 = new Image();
-// var boom9 = new Image();
-
 var sonicBoom = [];
 for(let i = 0; i <= 8; i++){
   sonicBoom[i] = new Image();
 } 
-// var sonicBoom1 = new Image();
-// var sonicBoom2 = new Image();
-// var sonicBoom3 = new Image();
-// var sonicBoom4 = new Image();
-// var sonicBoom5 = new Image();
-// var sonicBoom6 = new Image();
-// var sonicBoom7 = new Image();
-// var sonicBoom8 = new Image();
-// var sonicBoom9 = new Image();
 
 let themeMusic = new Audio("assets/themeMusic.mp3");
 let laserSound = new Audio("assets/Laser_Machine_Gun.mp3");
@@ -138,11 +130,12 @@ let missileSound = new Audio("assets/MissileFireWar.mp3");
 let explosionCrashSound = new Audio("assets/Explosion_Crash.mp3");
 let explosionMissileSound = new Audio("assets/BigBomb.mp3");
 let gravity = 1.5;
-var gForce = .5;
+var gForce = .3;
 let score = 0;
 let missileCount = 10;
 let fireballs = [];
 let missiles = [];
+let missilePacks = [];
 let lasers = [];
 let isPause = true;
 let start,stop;
@@ -150,41 +143,21 @@ let start,stop;
 //Set image sources
 missile.src = "assets/missile.png";
 laser.src = "assets/laser.png";
-// helicopter.src = "assets/helicopter.png";
 helicopter.src = "assets/apache.png";
-
 fireball.src = "assets/fireball.png";
-explosion.src = "assets/regularExplosion01.png";
+missilePack.src = "assets/ballistic_missile.png";
 
 for(let i =0; i<=8;i++){
 boom[i].src=`assets/regularExplosion0${i}.png`;
 }
 
-// boom1.src="/assets/regularExplosion00.png";
-// boom2.src="/assets/regularExplosion01.png";
-// boom3.src="/assets/regularExplosion02.png";
-// boom4.src="/assets/regularExplosion03.png";
-// boom5.src="/assets/regularExplosion04.png";
-// boom6.src="/assets/regularExplosion05.png";
-// boom7.src="/assets/regularExplosion06.png";
-// boom8.src="/assets/regularExplosion07.png";
-// boom9.src="/assets/regularExplosion08.png";
-
 for(let i =0; i<=8;i++){
   sonicBoom[i].src=`assets/sonicExplosion0${i}.png`;
   }
 
-// sonicBoom1.src="/assets/sonicExplosion00.png";
-// sonicBoom2.src="/assets/sonicExplosion01.png";
-// sonicBoom3.src="/assets/sonicExplosion02.png";
-// sonicBoom4.src="/assets/sonicExplosion03.png";
-// sonicBoom5.src="/assets/sonicExplosion04.png";
-// sonicBoom6.src="/assets/sonicExplosion05.png";
-// sonicBoom7.src="/assets/sonicExplosion06.png";
-// sonicBoom8.src="/assets/sonicExplosion07.png";
-// sonicBoom9.src="/assets/sonicExplosion08.png";
 
 //starts shooting fireballs
+//increase difficulty as user progresses
 setInterval(()=>{
   if(isPause)return;
   //increase game difficulty
@@ -194,11 +167,12 @@ setInterval(()=>{
     generateFireball(4);
   }else if(score>15 && fireballs.length<6){
     generateFireball(5);
+  }else if(score>25 && missileCount < 2){
+    generateMissilePack(1);
   }else{
     generateFireball(1);
   }
 } , 2000);
-
 
 
 /*======================
@@ -212,33 +186,21 @@ function startGame() {
   cx.clearRect(0,0,myCanvas.width,myCanvas.height);
 
   background.draw(ctx);
-  // ctx.scale(.5,.5);
+  
   ctx.drawImage(helicopter, Chopper.x, Chopper.y);
-  // ctx.scale(1,1);
+  
   for (let fire of fireballs) {
     ctx.drawImage(fireball, fire.x, fire.y);
     if(isPause) continue;//if game is pause dont move fireballs
     fire.x -= 10;
     if (isCollide(Chopper, fire)) {
+      console.log('better luck next time Jack')
       explosionCrashSound.play();
 
       for(let i = 0; i <=8;i++) {
         ctx.drawImage(boom[i],Chopper.x + Chopper.width, Chopper.y);
       }
 
-      // ctx.drawImage(boom1,Chopper.x + Chopper.width, Chopper.y);
-      // ctx.drawImage(boom2,Chopper.x + Chopper.width, Chopper.y);
-      // ctx.drawImage(boom3,Chopper.x + Chopper.width, Chopper.y);
-      // ctx.drawImage(boom4,Chopper.x + Chopper.width, Chopper.y);
-      // ctx.drawImage(boom5,Chopper.x + Chopper.width, Chopper.y);
-      // ctx.drawImage(boom6,Chopper.x + Chopper.width, Chopper.y);
-      // ctx.drawImage(boom7,Chopper.x + Chopper.width, Chopper.y);
-      // ctx.drawImage(boom8,Chopper.x + Chopper.width, Chopper.y);
-      // ctx.drawImage(boom9,Chopper.x + Chopper.width, Chopper.y);
-
-
-      // alert(`GAME OVER\n\nSCORE: ${score}`);
-      // refresh();
       gameOver();
     }
 
@@ -248,35 +210,26 @@ function startGame() {
       addScore(1);
     }
 
+
     //draw missiles and detect collision
     missiles.forEach(e => {
       ctx.drawImage(missile, e.x, e.y);
+      e.y += 5;
       if (e.x > myCanvas.width) {
         deleteObject(e);
       }
       e.x += 10;
       if (isCollide(e, fire)) {
-        // ctx.drawImage(explosion,e.x,e.y);
 
         for(let i = 0; i <=8;i++) {
           ctx.drawImage(sonicBoom[i],fire.x, fire.y);
         }
 
-        // ctx.drawImage(sonicBoom1,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom2,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom3,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom4,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom5,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom6,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom7,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom8,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom9,fire.x, fire.y);
-
         explosionMissileSound.play();
         missileCount++;
         deleteObject(e);
         deleteObject(fire);
-        addScore(5);
+        addScore(10);
       }
     });
 
@@ -289,22 +242,8 @@ function startGame() {
       e.x += 10;
       if (isCollide(e, fire)) {
 
-        // ctx.drawImage(explosion,e.x,e.y);
-
-        for(let i = 0; i <=8;i++) {
-          ctx.drawImage(sonicBoom[i],fire.x, fire.y);
-        }
-
+        for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],fire.x, fire.y);
         
-        // ctx.drawImage(sonicBoom2,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom3,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom4,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom5,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom6,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom7,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom8,fire.x, fire.y);
-        // ctx.drawImage(sonicBoom9,fire.x, fire.y);
-
 
         explosionMissileSound.play();
         deleteObject(e);
@@ -315,61 +254,39 @@ function startGame() {
   } //end fire loop
 
 
-  if (Chopper.y + 50 >= myCanvas.height) {
+  // if missilePacks [] has been filled draw the missilePack
 
+  if (missilePacks != []) {
+    ctx.drawImage(missilePack, missilePack.x, missilePack.y)
+    missilePack.x -= 10;
+  }
+
+
+  // hit the bottom boundary
+  if (Chopper.y + 50 >= myCanvas.height) {
+    console.log('hit the deck');
     for(let i = 0; i <=8;i++) {
       ctx.drawImage(sonicBoom[i],Chopper.x, Chopper.y);
     }
 
-
-    // ctx.drawImage(sonicBoom1,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom2,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom3,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom4,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom5,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom6,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom7,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom8,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom9,Chopper.x, Chopper.y);
-
-    // ctx.drawImage(explosion,Chopper.x,Chopper.y);
-    // ctx.drawImage(explosion,Chopper.x+Chopper.width,Chopper.y);
-    // ctx.drawImage(explosion,Chopper.x+Chopper.width/2,Chopper.y);
-
     explosionCrashSound.play();
-    // alert(`GAME OVER\n\nSCORE: ${score}`);
-    // refresh();
     gameOver();
   }
+
   if (Chopper.y <= 0) {
     Chopper.y += gravity * 2;
   }
 
   if(Chopper.x <= 0){
-
+    console.log('stay on the board');
     for(let i = 0; i <=8;i++) {
       ctx.drawImage(sonicBoom[i],Chopper.x, Chopper.y);
     }
 
-
-    // ctx.drawImage(sonicBoom1,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom2,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom3,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom4,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom5,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom6,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom7,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom8,Chopper.x, Chopper.y);
-    // ctx.drawImage(sonicBoom9,Chopper.x, Chopper.y);
-
     explosionCrashSound.play();
-    // alert(`GAME OVER\n\nSCORE: ${score}`);
-    // refresh(); 
     gameOver();
 
 }
-
-
 
   if(!isPause) {
     Chopper.y += gravity;
@@ -383,6 +300,7 @@ function startGame() {
 
   start = requestAnimationFrame(startGame);
 }
+
 /*======================
      EVENT LISTENERS
 ======================*/
@@ -410,15 +328,15 @@ document.addEventListener('keydown',
         Chopper.x += 20;  
         break;
 
-        case 76:
-        // keyCode 76 is 'l' for laser
-        //FIRE LASER
+        case 83:
+        // keyCode 83 is 's' for shoot
+        //SHOOT LASER
         lasers.push(new Laser());
         laserSound.play();
         break;
 
-        case 77:
-        //keyCode 77 is 'm' for missile 
+        case 70:
+        //keyCode 70 is 'f' for fire 
         //FIRE MISSILE
         if(missileCount==0)break;
         missiles.push(new Missile());
@@ -427,7 +345,7 @@ document.addEventListener('keydown',
         break;
 
         case 38: 
-        case 76:
+        case 83:
         //keyCode 39 is arrow right
         Chopper.x += 20;  
         // keyCode 76 is 'l' for laser
@@ -437,7 +355,7 @@ document.addEventListener('keydown',
         break;
 
         case 40:
-        case 76:
+        case 83:
         //keyCode 40 is arrow down
         Chopper.y +=30;
         // keyCode 76 is 'l' for laser
@@ -447,7 +365,7 @@ document.addEventListener('keydown',
         break;
 
         case 38:
-        case 76:
+        case 83:
         //keyCode 38 is arrow up
         Chopper.y -=30;
         // keyCode 76 is 'l' for laser
@@ -455,15 +373,6 @@ document.addEventListener('keydown',
         lasers.push(new Laser());
         laserSound.play();
         break;
-
-
-
-
-
-
-
-
-
 
         case 80:
         //pause game on 'P' key
@@ -515,6 +424,7 @@ function refresh(){
   missiles=[];
   missileCount =10;
   fireballs=[];
+  missilePacks = [];
   Chopper.x = 150;
   Chopper.y = 150;
 }
@@ -527,6 +437,17 @@ function generateFireball(x){
     fireballs.push(f);
   }
 }
+
+//generates missilePack
+function generateMissilePack(x){
+  for(let i=0;i<x;i++){
+    let f = new MissilePack();
+    f.x = (Math.random()*myCanvas.width+200)+myCanvas.width;
+    missilePacks.push(f);
+  }
+}
+
+
 
 //game over
 function gameOver(){
