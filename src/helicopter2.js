@@ -65,12 +65,20 @@ function Fireball() {
   this.width = fireball.width;
 }
 
+//satellite object
+function Satellite() {
+  this.x = myCanvas.width;
+  this.y = Math.random() * myCanvas.height;
+  this.height = satelliteImg.height;
+  this.width = satelliteImg.width;
+}
+
 //helicopter object
 let Chopper = {
   x: 250,
   y: 150,
-  height: 71,
-  width: 200
+  height: 50,
+  width: 150
 };
 
 //missile object
@@ -113,6 +121,7 @@ let helicopter = new Image();
 let missile = new Image();
 let laser = new Image();
 let fireball = new Image();
+let satelliteImg = new Image();
 let explosion = new Image();
 let missilePack = new Image();
 var boom = [];
@@ -130,6 +139,7 @@ var gForce = .3;
 let score = 0;
 let missileCount = 10;
 let fireballs = [];
+let satellites = [];
 let missiles = [];
 let missilePacks = [];
 let lasers = [];
@@ -139,7 +149,10 @@ let start,stop;
 //image sources
 missile.src = "assets/missile.png";
 laser.src = "assets/laser.png";
-helicopter.src = "assets/apache.png";
+// helicopter.src = "assets/apache.png";
+helicopter.src = "assets/ARC-1701.png";
+satelliteImg.src = "assets/satellite.png";
+
 fireball.src = "assets/fireball.png";
 missilePack.src = "assets/ballistic_missile.png";
 for(let i =0; i<=8;i++) boom[i].src=`assets/regularExplosion0${i}.png`;
@@ -153,14 +166,18 @@ setInterval(()=>{
   //increase game difficulty
   if(score>5 && score<10 && fireballs.length<3){
     generateFireball(3);
+    generateSatellite(2);
   }else if(score>10 && score<15 && fireballs.length<4){
     generateFireball(4);
+    generateSatellite(3);
   }else if(score>15 && fireballs.length<6){
     generateFireball(5);
+    generateSatellite(4);
   }else if(score>25 && missileCount < 2){
     generateMissilePack(1); 
   }else{
     generateFireball(1);
+    generateSatellite(1);
   }
 } , 2000);
 
@@ -175,10 +192,10 @@ function startGame() {
 
 //change background as score increases
 
-if(score>50)  myCanvas.style.backgroundImage = "url('../assets/starfield.png')";
-if(score>100) myCanvas.style.backgroundImage = "url('../assets/8bitadevnture_cover-9784.jpeg')";
-if(score>150) myCanvas.style.backgroundImage = "url('../assets/starfield.png')";
-if(score>200) myCanvas.style.backgroundImage = "url('../assets/8bitadevnture_cover-9784.jpeg')";
+if(score>50)  myCanvas.style.backgroundImage = "url('../assets/heartNebula.jpg')";
+if(score>100) myCanvas.style.backgroundImage = "url('../assets/crabNebula.png')";
+if(score>150) myCanvas.style.backgroundImage = "url('../assets/neonNebula.jpg')";
+if(score>200) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
 
 
   
@@ -242,6 +259,65 @@ if(score>200) myCanvas.style.backgroundImage = "url('../assets/8bitadevnture_cov
       }
     });
   } //end fire loop
+
+
+  for (let satellite of satellites) {
+    ctx.drawImage(satelliteImg, satellite.x, satellite.y);
+    if(isPause) continue;//if game is pause dont move satellites
+    satellite.x -= 10;
+
+
+    // if (isCollide(Chopper, fire)) {
+    //   console.log('better luck next time Jack')
+    //   explosionCrashSound.play();
+    //   for(let i = 0; i <=8;i++) ctx.drawImage(boom[i],Chopper.x + Chopper.width, Chopper.y);
+    //   gameOver();
+    // }
+
+    //delete satelitte after passes screen
+    if (satellite.x + satellite.width <= 0) {
+      deleteObject(satellite);
+      addScore(1);
+    }
+
+    // //draw missiles and detect collision
+    // missiles.forEach(e => {
+    //   ctx.drawImage(missile, e.x, e.y);
+    //   e.y += 5;
+    //   if (e.x > myCanvas.width) {
+    //     deleteObject(e);
+    //   }
+    //   e.x += 10;
+    //   if (isCollide(e, fire)) {
+    //     for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],fire.x, fire.y);
+    //     explosionMissileSound.play();
+    //     missileCount++;
+    //     deleteObject(e);
+    //     deleteObject(fire);
+    //     addScore(10);
+    //   }
+    // });
+
+    // //draw lasers and detect collision
+    // lasers.forEach(e => {
+    //   ctx.drawImage(laser, e.x, e.y);
+    //   if (e.x > myCanvas.width) {
+    //     deleteObject(e);
+    //   }
+    //   e.x += 10;
+    //   if (isCollide(e, fire)) {
+    //     for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],fire.x, fire.y);
+    //     explosionMissileSound.play();
+    //     deleteObject(e);
+    //     deleteObject(fire);
+    //     addScore(5);
+    //   }
+    // });
+  } //end satellite loop
+
+
+
+
 
 
   // if missilePacks [] has been filled draw the missilePack
@@ -407,7 +483,7 @@ function refresh(){
   missileCount =10;
   fireballs=[];
   missilePacks = [];
-  Chopper.x = 150;
+  Chopper.x = 250;
   Chopper.y = 150;
 }
 
@@ -419,6 +495,16 @@ function generateFireball(x){
     fireballs.push(f);
   }
 }
+
+//generates Satellites
+function generateSatellite(x){
+  for(let i=0;i<x;i++){
+    let s = new Satellite();
+    s.x = (Math.random()*myCanvas.width+200)+myCanvas.width;
+    satellites.push(s);
+  }
+}
+
 
 //generates missilePack
 function generateMissilePack(x){
