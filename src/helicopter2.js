@@ -89,8 +89,6 @@ function MissilePack() {
   this.width = missilePack.width;
 }
 
-
-
 //laser object
 function Laser() {
   this.x = Chopper.x + helicopter.width - 25;
@@ -106,6 +104,8 @@ let myCanvas = document.getElementById('gameScreen');
 let ctx = myCanvas.getContext('2d');
 let myScoreCanvas = document.getElementById('scoreScreen');
 let cx = myScoreCanvas.getContext('2d');
+let myWeatherCanvas = document.getElementById('weather');
+let cwx = myWeatherCanvas.getContext('2d');
 let background = new Background();
 let helicopter = new Image();
 let missile = new Image();
@@ -113,17 +113,10 @@ let laser = new Image();
 let fireball = new Image();
 let explosion = new Image();
 let missilePack = new Image();
-
 var boom = [];
-for(let i = 0; i <= 8; i++){
-  boom[i] = new Image();
-} 
-
+for(let i = 0; i <= 8; i++) boom[i] = new Image();
 var sonicBoom = [];
-for(let i = 0; i <= 8; i++){
-  sonicBoom[i] = new Image();
-} 
-
+for(let i = 0; i <= 8; i++) sonicBoom[i] = new Image();
 let themeMusic = new Audio("assets/themeMusic.mp3");
 let laserSound = new Audio("assets/Laser_Machine_Gun.mp3");
 let missileSound = new Audio("assets/MissileFireWar.mp3");
@@ -146,15 +139,9 @@ laser.src = "assets/laser.png";
 helicopter.src = "assets/apache.png";
 fireball.src = "assets/fireball.png";
 missilePack.src = "assets/ballistic_missile.png";
-
-for(let i =0; i<=8;i++){
-boom[i].src=`assets/regularExplosion0${i}.png`;
-}
-
-for(let i =0; i<=8;i++){
-  sonicBoom[i].src=`assets/sonicExplosion0${i}.png`;
-  }
-
+for(let i =0; i<=8;i++) boom[i].src=`assets/regularExplosion0${i}.png`;
+for(let i =0; i<=8;i++) sonicBoom[i].src=`assets/sonicExplosion0${i}.png`;
+  
 
 //starts shooting fireballs
 //increase difficulty as user progresses
@@ -196,11 +183,7 @@ function startGame() {
     if (isCollide(Chopper, fire)) {
       console.log('better luck next time Jack')
       explosionCrashSound.play();
-
-      for(let i = 0; i <=8;i++) {
-        ctx.drawImage(boom[i],Chopper.x + Chopper.width, Chopper.y);
-      }
-
+      for(let i = 0; i <=8;i++) ctx.drawImage(boom[i],Chopper.x + Chopper.width, Chopper.y);
       gameOver();
     }
 
@@ -209,7 +192,6 @@ function startGame() {
       deleteObject(fire);
       addScore(1);
     }
-
 
     //draw missiles and detect collision
     missiles.forEach(e => {
@@ -220,11 +202,7 @@ function startGame() {
       }
       e.x += 10;
       if (isCollide(e, fire)) {
-
-        for(let i = 0; i <=8;i++) {
-          ctx.drawImage(sonicBoom[i],fire.x, fire.y);
-        }
-
+        for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],fire.x, fire.y);
         explosionMissileSound.play();
         missileCount++;
         deleteObject(e);
@@ -241,10 +219,7 @@ function startGame() {
       }
       e.x += 10;
       if (isCollide(e, fire)) {
-
         for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],fire.x, fire.y);
-        
-
         explosionMissileSound.play();
         deleteObject(e);
         deleteObject(fire);
@@ -255,20 +230,16 @@ function startGame() {
 
 
   // if missilePacks [] has been filled draw the missilePack
-
-  if (missilePacks != []) {
-    ctx.drawImage(missilePack, missilePack.x, missilePack.y)
-    missilePack.x -= 10;
-  }
+  // if (missilePacks != []) {
+  //   ctx.drawImage(missilePack, missilePack.x, missilePack.y)
+  //   missilePack.x -= 10;
+  // }
 
 
   // hit the bottom boundary
   if (Chopper.y + 50 >= myCanvas.height) {
     console.log('hit the deck');
-    for(let i = 0; i <=8;i++) {
-      ctx.drawImage(sonicBoom[i],Chopper.x, Chopper.y);
-    }
-
+    for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],Chopper.x, Chopper.y);
     explosionCrashSound.play();
     gameOver();
   }
@@ -279,13 +250,9 @@ function startGame() {
 
   if(Chopper.x <= 0){
     console.log('stay on the board');
-    for(let i = 0; i <=8;i++) {
-      ctx.drawImage(sonicBoom[i],Chopper.x, Chopper.y);
-    }
-
+    for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],Chopper.x, Chopper.y);
     explosionCrashSound.play();
     gameOver();
-
 }
 
   if(!isPause) {
@@ -448,7 +415,6 @@ function generateMissilePack(x){
 }
 
 
-
 //game over
 function gameOver(){
   cancelAnimationFrame(start);
@@ -466,5 +432,81 @@ function gameOver(){
 function playGameSong(){
   !isPause ? themeMusic.play() : themeMusic.pause();
 }
+
+  
+ 
+var w = myWeatherCanvas.width;
+var h = myWeatherCanvas.height;
+cwx.strokeStyle = 'rgba(174,194,224,0.5)';
+cwx.lineWidth = 1;
+cwx.lineCap = 'round';
+
+
+var init = [];
+var maxParts = 1000;
+for(var a = 0; a < maxParts; a++) {
+  init.push({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    l: Math.random() * 1,
+    xs: -4 + Math.random() * 4 + 2,
+    ys: Math.random() * 10 + 10
+  })
+}
+
+var particles = [];
+for(var b = 0; b < maxParts; b++) {
+  particles[b] = init[b];
+}
+
+function draw() {
+  cwx.clearRect(0, 0, w, h);
+  for(var c = 0; c < particles.length; c++) {
+    var p = particles[c];
+    cwx.beginPath();
+    cwx.moveTo(p.x, p.y);
+    cwx.lineTo(p.x + p.l * p.xs, p.y + p.l * p.ys);
+    cwx.stroke();
+  }
+  move();
+}
+
+function move() {
+  for(var b = 0; b < particles.length; b++) {
+    var p = particles[b];
+    p.x += p.xs;
+    p.y += p.ys;
+    if(p.x > w || p.y > h) {
+      p.x = Math.random() * w;
+      p.y = -20;
+    }
+  }
+}
+
+setInterval(draw, 30);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 startGame();
