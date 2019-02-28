@@ -100,12 +100,14 @@ function Laser() {
 /*======================
     GLOBAL VARIABLES
 ======================*/
+//canvas context
 let myCanvas = document.getElementById('gameScreen');
 let ctx = myCanvas.getContext('2d');
 let myScoreCanvas = document.getElementById('scoreScreen');
 let cx = myScoreCanvas.getContext('2d');
 let myWeatherCanvas = document.getElementById('weather');
 let weatherContext = myWeatherCanvas.getContext('2d');
+//object instantiation
 let background = new Background();
 let helicopter = new Image();
 let missile = new Image();
@@ -122,6 +124,7 @@ let laserSound = new Audio("assets/Laser_Machine_Gun.mp3");
 let missileSound = new Audio("assets/MissileFireWar.mp3");
 let explosionCrashSound = new Audio("assets/Explosion_Crash.mp3");
 let explosionMissileSound = new Audio("assets/BigBomb.mp3");
+//variable declaration
 let gravity = 1.5;
 var gForce = .3;
 let score = 0;
@@ -133,7 +136,7 @@ let lasers = [];
 let isPause = true;
 let start,stop;
 
-//Set image sources
+//image sources
 missile.src = "assets/missile.png";
 laser.src = "assets/laser.png";
 helicopter.src = "assets/apache.png";
@@ -171,6 +174,7 @@ function startGame() {
 
 
 //change background as score increases
+
 if(score>50)  myCanvas.style.backgroundImage = "url('../assets/starfield.png')";
 if(score>100) myCanvas.style.backgroundImage = "url('../assets/8bitadevnture_cover-9784.jpeg')";
 if(score>150) myCanvas.style.backgroundImage = "url('../assets/starfield.png')";
