@@ -207,6 +207,32 @@ if(score>200) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
   background.draw(ctx);
   
   ctx.drawImage(helicopter, Chopper.x, Chopper.y);
+
+  ctx.save();
+
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = 'aqua';
+
+  ctx.beginPath();
+  ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.5 * Math.PI, 1.8 * Math.PI);
+  ctx.strokeStyle = "#757575";
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.8 * Math.PI, .2 * Math.PI);
+  ctx.strokeStyle = "#757575";
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, .2 * Math.PI, .5 * Math.PI);
+  ctx.strokeStyle = "#757575";
+  ctx.stroke();
+
+  ctx.restore();
+
+
   
   for (let fire of fireballs) {
     ctx.drawImage(fireball, fire.x, fire.y);
