@@ -27,9 +27,9 @@ html, body {
 #gameScreen{ 
     /* background-image: url("../assets/8bitadevnture_cover-9784.jpeg"); */
 
-    background-image: url("../assets/nebula.jpg");
+    background-image: url("../assets/nebulaGIF.gif");
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: 120%;
     background-color: darkblue;
 
 }

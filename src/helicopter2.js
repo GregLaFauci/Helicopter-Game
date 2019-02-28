@@ -217,7 +217,7 @@ if(score>200) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
 
   ctx.beginPath();
   ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.5 * Math.PI, 1.8 * Math.PI);
-  ctx.strokeStyle = "#757575";
+  ctx.strokeStyle = "#00ff00";
   ctx.stroke();
 
   ctx.beginPath();
@@ -227,7 +227,7 @@ if(score>200) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
 
   ctx.beginPath();
   ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, .2 * Math.PI, .5 * Math.PI);
-  ctx.strokeStyle = "#757575";
+  ctx.strokeStyle = "#ff0000";
   ctx.stroke();
 
   ctx.restore();
