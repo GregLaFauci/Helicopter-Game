@@ -77,8 +77,8 @@ function Satellite() {
 let Chopper = {
   x: 250,
   y: 150,
-  height: 50,
-  width: 150
+  height: 40,
+  width: 130
 };
 
 //missile object
