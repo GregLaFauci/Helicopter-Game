@@ -1,6 +1,6 @@
 html, body {
     /* background-color: #020202; */
-    background-color: #7092F7;
+    background-color: #616161;
 }
 
 #gameView {
@@ -14,7 +14,7 @@ html, body {
 }
 #gameScreen, #scoreScreen, #weather {
     position: absolute;
-    border: 5px solid black;
+    border: 5px solid #b2babb;
     border-radius: 50px; 
     padding: 0;
     margin: auto;
@@ -35,10 +35,10 @@ html, body {
 
 }
 
-#gameHeader {
-    color: white;
+/* #gameHeader {
+    color: #f5f5f5;
     text-align: center;
-}
+} */
 
 #gameStartModal{
     position: absolute;
@@ -46,16 +46,16 @@ html, body {
     
     grid-template-columns: 50% 50%;
     grid-template-areas: 'left right';
-    background-color: rgba(200, 200, 200, .8);
+    background-color: rgba(33,33,33 , .8);
     background: rgba(184, 2, 46, 0.8) url("../assets/CrosshairPic.png");
-    background-size: 400px;
+    background-size: 300px;
     background-position: center;
     background-repeat: no-repeat;
     
     margin: 0 auto;
     top: 15vh;
     left: 5vw;
-    height: auto;
+    height: 70%;
     width: 90%;
     z-index: 5;
     text-align: center;
@@ -63,7 +63,7 @@ html, body {
     justify-items: center;
 
 }
-#gameStartModal ul{
+/* #gameStartModal ul{
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -75,17 +75,28 @@ html, body {
     padding: 1.5rem;
     font-size: 20px;
     font-weight: bold;
-}
+} */
 
 #gamePlay {
     grid-area: left;
-    color: white;
+    color: #eee;
+    width: 300px;
 }
 
-#gameControl {
+#gameControls {
     grid-area: right;
-    
+    color: #eee;
+    width: 300px;
 }
+
+#gameControls ul {
+    list-style: none;
+}
+
+/* #gameControls li {
+    display: inline;
+} */
+
 
 /* canvas { 
     position: absolute; 

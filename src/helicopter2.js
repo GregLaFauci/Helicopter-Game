@@ -145,6 +145,7 @@ let missilePacks = [];
 let lasers = [];
 let isPause = true;
 let start,stop;
+var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
 
 //image sources
 missile.src = "assets/missile.png";
@@ -225,6 +226,8 @@ function startGame() {
   // end SHIELD
 
   
+
+  //FIREBALL LOOP
   for (let fire of fireballs) {
     ctx.drawImage(fireball, fire.x, fire.y);
     if(isPause) continue;//if game is pause dont move fireballs
@@ -277,7 +280,7 @@ function startGame() {
     });
   } //end fire loop
 
-
+//SATELLITE LOOP
   for (let satellite of satellites) {
     ctx.drawImage(satelliteImg, satellite.x, satellite.y);
     if(isPause) continue;//if game is pause dont move satellites
