@@ -166,13 +166,13 @@ setInterval(()=>{
   //increase game difficulty
   if(score>5 && score<10 && fireballs.length<3){
     generateFireball(3);
-    generateSatellite(2);
+    generateSatellite(1);
   }else if(score>10 && score<15 && fireballs.length<4){
     generateFireball(4);
-    generateSatellite(3);
+    generateSatellite(2);
   }else if(score>15 && fireballs.length<6){
     generateFireball(5);
-    generateSatellite(4);
+    generateSatellite(2);
   }else if(score>25 && missileCount < 2){
     generateMissilePack(1); 
   }else{
@@ -183,22 +183,17 @@ setInterval(()=>{
 
 
 
-
 /*======================
         THE GAME
 ======================*/
 function startGame() {
 
+  //change background as score increases
+  if(score>50)  myCanvas.style.backgroundImage = "url('../assets/heartNebula.jpg')";
+  if(score>100) myCanvas.style.backgroundImage = "url('../assets/crabNebula.png')";
+  if(score>150) myCanvas.style.backgroundImage = "url('../assets/neonNebula.jpg')";
+  if(score>200) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
 
-//change background as score increases
-
-if(score>50)  myCanvas.style.backgroundImage = "url('../assets/heartNebula.jpg')";
-if(score>100) myCanvas.style.backgroundImage = "url('../assets/crabNebula.png')";
-if(score>150) myCanvas.style.backgroundImage = "url('../assets/neonNebula.jpg')";
-if(score>200) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
-
-
-  
   playGameSong();
   
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
@@ -208,30 +203,26 @@ if(score>200) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
   
   ctx.drawImage(helicopter, Chopper.x, Chopper.y);
 
+  // draw SHIELD  
   ctx.save();
-
   ctx.lineWidth = 5;
   ctx.lineCap = 'round';
   ctx.shadowBlur = 10;
   ctx.shadowColor = 'aqua';
-
   ctx.beginPath();
   ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.5 * Math.PI, 1.8 * Math.PI);
-  ctx.strokeStyle = "#00ff00";
+  ctx.strokeStyle = "#757575";
   ctx.stroke();
-
   ctx.beginPath();
   ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.8 * Math.PI, .2 * Math.PI);
   ctx.strokeStyle = "#757575";
   ctx.stroke();
-
   ctx.beginPath();
   ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, .2 * Math.PI, .5 * Math.PI);
-  ctx.strokeStyle = "#ff0000";
+  ctx.strokeStyle = "#757575";
   ctx.stroke();
-
   ctx.restore();
-
+  // end SHIELD
 
   
   for (let fire of fireballs) {
@@ -293,57 +284,55 @@ if(score>200) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
     satellite.x -= 10;
 
 
-    // if (isCollide(Chopper, fire)) {
-    //   console.log('better luck next time Jack')
-    //   explosionCrashSound.play();
-    //   for(let i = 0; i <=8;i++) ctx.drawImage(boom[i],Chopper.x + Chopper.width, Chopper.y);
-    //   gameOver();
-    // }
+    if (isCollide(Chopper, satellite)) {
+      console.log('you crashed into a friendly JACK')
+      explosionCrashSound.play();
+      for(let i = 0; i <=8;i++) ctx.drawImage(boom[i],Chopper.x + Chopper.width, Chopper.y);
+      gameOver();
+    }
 
     //delete satelitte after passes screen
     if (satellite.x + satellite.width <= 0) {
       deleteObject(satellite);
-      addScore(1);
+      addScore(10);
     }
 
-    // //draw missiles and detect collision
-    // missiles.forEach(e => {
-    //   ctx.drawImage(missile, e.x, e.y);
-    //   e.y += 5;
-    //   if (e.x > myCanvas.width) {
-    //     deleteObject(e);
-    //   }
-    //   e.x += 10;
-    //   if (isCollide(e, fire)) {
-    //     for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],fire.x, fire.y);
-    //     explosionMissileSound.play();
-    //     missileCount++;
-    //     deleteObject(e);
-    //     deleteObject(fire);
-    //     addScore(10);
-    //   }
-    // });
+    //draw missiles and detect collision
+    //if missile shoots satellite -20 points
+    missiles.forEach(e => {
+      ctx.drawImage(missile, e.x, e.y);
+      e.y += 5;
+      if (e.x > myCanvas.width) {
+        deleteObject(e);
+      }
+      e.x += 10;
+      if (isCollide(e, satellite)) {
+        for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],satellite.x, satellite.y);
+        explosionMissileSound.play();
+        missileCount++;
+        deleteObject(e);
+        deleteObject(satellite);
+        addScore(-20);
+      }
+    });
 
-    // //draw lasers and detect collision
-    // lasers.forEach(e => {
-    //   ctx.drawImage(laser, e.x, e.y);
-    //   if (e.x > myCanvas.width) {
-    //     deleteObject(e);
-    //   }
-    //   e.x += 10;
-    //   if (isCollide(e, fire)) {
-    //     for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],fire.x, fire.y);
-    //     explosionMissileSound.play();
-    //     deleteObject(e);
-    //     deleteObject(fire);
-    //     addScore(5);
-    //   }
-    // });
+    //draw lasers and detect collision
+    //if laser shoots satellite -10 points
+    lasers.forEach(e => {
+      ctx.drawImage(laser, e.x, e.y);
+      if (e.x > myCanvas.width) {
+        deleteObject(e);
+      }
+      e.x += 10;
+      if (isCollide(e, satellite)) {
+        for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],satellite.x, satellite.y);
+        explosionMissileSound.play();
+        deleteObject(e);
+        deleteObject(satellite);
+        addScore(-10);
+      }
+    });
   } //end satellite loop
-
-
-
-
 
 
   // if missilePacks [] has been filled draw the missilePack
@@ -566,56 +555,57 @@ function playGameSong(){
   
 
 //make it rain
-var w = myWeatherCanvas.width;
-var h = myWeatherCanvas.height;
-weatherContext.strokeStyle = 'rgba(174,194,224,0.5)';
-weatherContext.lineWidth = 1;
-weatherContext.lineCap = 'round';
 
+function makeItRain() {
+  var w = myWeatherCanvas.width;
+  var h = myWeatherCanvas.height;
+  weatherContext.strokeStyle = 'rgba(174,194,224,0.5)';
+  weatherContext.lineWidth = 1;
+  weatherContext.lineCap = 'round';
+  var init = [];
+  var maxParts = 1000;
 
-var init = [];
-var maxParts = 1000;
-for(var a = 0; a < maxParts; a++) {
-  init.push({
-    x: Math.random() * w,
-    y: Math.random() * h,
-    l: Math.random() * 1,
-    xs: -4 + Math.random() * 4 + 2,
-    ys: Math.random() * 10 + 10
-  })
-}
-
-var particles = [];
-for(var b = 0; b < maxParts; b++) {
-  particles[b] = init[b];
-}
-
-function draw() {
-  weatherContext.clearRect(0, 0, w, h);
-  for(var c = 0; c < particles.length; c++) {
-    var p = particles[c];
-    weatherContext.beginPath();
-    weatherContext.moveTo(p.x, p.y);
-    weatherContext.lineTo(p.x + p.l * p.xs, p.y + p.l * p.ys);
-    weatherContext.stroke();
+  for(var a = 0; a < maxParts; a++) {
+    init.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      l: Math.random() * 1,
+      xs: -4 + Math.random() * 4 + 2,
+      ys: Math.random() * 10 + 10
+    })
   }
-  move();
-}
 
-function move() {
-  for(var b = 0; b < particles.length; b++) {
-    var p = particles[b];
-    p.x += p.xs;
-    p.y += p.ys;
-    if(p.x > w || p.y > h) {
-      p.x = Math.random() * w;
-      p.y = -20;
+  var particles = [];
+  for(var b = 0; b < maxParts; b++) {
+    particles[b] = init[b];
+  }
+
+  function draw() {
+    weatherContext.clearRect(0, 0, w, h);
+    for(var c = 0; c < particles.length; c++) {
+      var p = particles[c];
+      weatherContext.beginPath();
+      weatherContext.moveTo(p.x, p.y);
+      weatherContext.lineTo(p.x + p.l * p.xs, p.y + p.l * p.ys);
+      weatherContext.stroke();
+    }
+    move();
+  }
+
+  function move() {
+    for(var b = 0; b < particles.length; b++) {
+      var p = particles[b];
+      p.x += p.xs;
+      p.y += p.ys;
+      if(p.x > w || p.y > h) {
+        p.x = Math.random() * w;
+        p.y = -20;
+      }
     }
   }
-}
 
-setInterval(draw, 30);
-
+  setInterval(draw, 30);
+  }; // end of rain
 
 // startGame()
 startGame();
