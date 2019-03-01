@@ -169,10 +169,10 @@ setInterval(()=>{
     generateSatellite(1);
   }else if(score>10 && score<15 && fireballs.length<4){
     generateFireball(4);
-    generateSatellite(2);
+    generateSatellite(1);
   }else if(score>15 && fireballs.length<6){
     generateFireball(5);
-    generateSatellite(2);
+    generateSatellite(1);
   }else if(score>25 && missileCount < 2){
     generateMissilePack(1); 
   }else{
@@ -189,10 +189,10 @@ setInterval(()=>{
 function startGame() {
 
   //change background as score increases
-  if(score>50)  myCanvas.style.backgroundImage = "url('../assets/heartNebula.jpg')";
-  if(score>100) myCanvas.style.backgroundImage = "url('../assets/crabNebula.png')";
-  if(score>150) myCanvas.style.backgroundImage = "url('../assets/neonNebula.jpg')";
-  if(score>200) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
+  if(score>100)  myCanvas.style.backgroundImage = "url('../assets/heartNebula.jpg')";
+  if(score>500) myCanvas.style.backgroundImage = "url('../assets/crabNebula.png')";
+  if(score>100) myCanvas.style.backgroundImage = "url('../assets/neonNebula.jpg')";
+  if(score>2000) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
 
   playGameSong();
   
@@ -204,24 +204,24 @@ function startGame() {
   ctx.drawImage(helicopter, Chopper.x, Chopper.y);
 
   // draw SHIELD  
-  ctx.save();
-  ctx.lineWidth = 5;
-  ctx.lineCap = 'round';
-  ctx.shadowBlur = 10;
-  ctx.shadowColor = 'aqua';
-  ctx.beginPath();
-  ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.5 * Math.PI, 1.8 * Math.PI);
-  ctx.strokeStyle = "#757575";
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.8 * Math.PI, .2 * Math.PI);
-  ctx.strokeStyle = "#757575";
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, .2 * Math.PI, .5 * Math.PI);
-  ctx.strokeStyle = "#757575";
-  ctx.stroke();
-  ctx.restore();
+  // ctx.save();
+  // ctx.lineWidth = 5;
+  // ctx.lineCap = 'round';
+  // ctx.shadowBlur = 10;
+  // ctx.shadowColor = 'aqua';
+  // ctx.beginPath();
+  // ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.5 * Math.PI, 1.8 * Math.PI);
+  // ctx.strokeStyle = "#757575";
+  // ctx.stroke();
+  // ctx.beginPath();
+  // ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.8 * Math.PI, .2 * Math.PI);
+  // ctx.strokeStyle = "#757575";
+  // ctx.stroke();
+  // ctx.beginPath();
+  // ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, .2 * Math.PI, .5 * Math.PI);
+  // ctx.strokeStyle = "#757575";
+  // ctx.stroke();
+  // ctx.restore();
   // end SHIELD
 
   
@@ -350,16 +350,26 @@ function startGame() {
     gameOver();
   }
 
+  //hit the top boundary
   if (Chopper.y <= 0) {
-    Chopper.y += gravity * 2;
+    console.log('come back down to earth Jim')
+    Chopper.y += gravity * 8;
   }
 
+//hit the left boundary
   if(Chopper.x <= 0){
     console.log('stay on the board');
     for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],Chopper.x, Chopper.y);
     explosionCrashSound.play();
     gameOver();
 }
+
+//hit the right boundary
+if (Chopper.x >= myCanvas.width) {
+  console.log('slow down Jimmy');
+  Chopper.x += gForce * 8;
+}
+
 
   if(!isPause) {
     Chopper.y += gravity;
