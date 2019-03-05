@@ -65,6 +65,15 @@ function Fireball() {
   this.width = fireball.width;
 }
 
+//clone object
+function Clone() {
+  this.x = myCanvas.width;
+  this.y = Math.random() * myCanvas.height;
+  this.height = clone.height;
+  this.width = clone.width;
+}
+
+
 //satellite object
 function Satellite() {
   this.x = myCanvas.width;
@@ -93,8 +102,8 @@ function Missile() {
 function MissilePack() {
   this.x = myCanvas.width;
   this.y = Math.random() * myCanvas.height;
-  this.height = missilePack.height;
-  this.width = missilePack.width;
+  this.height = missilePackImg.height;
+  this.width = missilePackImg.width;
 }
 
 //laser object
@@ -104,6 +113,36 @@ function Laser() {
   this.height = laser.height;
   this.width = laser.width;
 }
+
+//keyboard construction
+function Keyboard() {
+  var keyState = {};
+
+  window.addEventListener("keydown", function(e) {
+    // e.preventDefault();
+    keyState[e.keyCode] = true;
+  });
+
+  window.addEventListener("keyup", function(e) {
+    // e.preventDefault();
+    keyState[e.keyCode] = false;
+    e.keyCode == 80 ? isPause = !isPause : null;
+  });
+
+  this.isDown = function(keyCode) {
+    return keyState[keyCode] === true;
+  };
+
+  this.KEYS = { LEFT: 37, 
+                RIGHT: 39, 
+                UP: 38, 
+                DOWN: 40, 
+                S: 83, 
+                F: 70,
+                P: 80 
+              
+              };
+};
 
 /*======================
     GLOBAL VARIABLES
@@ -123,7 +162,9 @@ let laser = new Image();
 let fireball = new Image();
 let satelliteImg = new Image();
 let explosion = new Image();
-let missilePack = new Image();
+let missilePackImg = new Image();
+let clone = new Image();
+let keyboard = new Keyboard();
 var boom = [];
 for(let i = 0; i <= 8; i++) boom[i] = new Image();
 var sonicBoom = [];
@@ -143,19 +184,24 @@ let satellites = [];
 let missiles = [];
 let missilePacks = [];
 let lasers = [];
+let clones = [];
 let isPause = true;
-let start,stop;
-var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+let start,stop, clone500;
+let plusOrMinus= 1;
+let playerLife = 4;
+let missileFired = false;
+
 
 //image sources
 missile.src = "assets/missile.png";
 laser.src = "assets/laser.png";
 // helicopter.src = "assets/apache.png";
 helicopter.src = "assets/Valor-class_cruiser.png";
+clone.src = "assets/Valor-class_cruiser.png";
 satelliteImg.src = "assets/satellite.png";
 
 fireball.src = "assets/fireball.png";
-missilePack.src = "assets/ballistic_missile.png";
+missilePackImg.src = "assets/ballistic_missile.png";
 for(let i =0; i<=8;i++) boom[i].src=`assets/regularExplosion0${i}.png`;
 for(let i =0; i<=8;i++) sonicBoom[i].src=`assets/sonicExplosion0${i}.png`;
   
@@ -184,10 +230,15 @@ setInterval(()=>{
 
 
 
+
 /*======================
         THE GAME
 ======================*/
 function startGame() {
+  
+  Chopper.prototype.update();
+  
+
 
   //change background as score increases
   if(score>100)  myCanvas.style.backgroundImage = "url('../assets/heartNebula.jpg')";
@@ -196,6 +247,14 @@ function startGame() {
   if(score>2000) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
 
   playGameSong();
+
+  generateClone500();
+  // console.log(clone500);
+  // console.log(plusOrMinus);
+  if(clone500 == 42) {
+    generateClone(1);
+    console.log('clone500 should have fired');
+  }
   
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   cx.clearRect(0,0,myCanvas.width,myCanvas.height);
@@ -204,28 +263,40 @@ function startGame() {
   
   ctx.drawImage(helicopter, Chopper.x, Chopper.y);
 
-  // draw SHIELD  
-  // ctx.save();
-  // ctx.lineWidth = 5;
-  // ctx.lineCap = 'round';
-  // ctx.shadowBlur = 10;
-  // ctx.shadowColor = 'aqua';
-  // ctx.beginPath();
-  // ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.5 * Math.PI, 1.8 * Math.PI);
-  // ctx.strokeStyle = "#757575";
-  // ctx.stroke();
-  // ctx.beginPath();
-  // ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.8 * Math.PI, .2 * Math.PI);
-  // ctx.strokeStyle = "#757575";
-  // ctx.stroke();
-  // ctx.beginPath();
-  // ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, .2 * Math.PI, .5 * Math.PI);
-  // ctx.strokeStyle = "#757575";
-  // ctx.stroke();
-  // ctx.restore();
-  // end SHIELD
+  //draw SHIELD  
+  if(playerLife > 1){
+    ctx.save();
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = 'aqua';
+    if(playerLife > 3){
+      ctx.beginPath();
+      ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.5 * Math.PI, .5 * Math.PI);
+      ctx.strokeStyle = "green";
+      ctx.stroke();
+    }
+    if(playerLife > 2){
+    ctx.beginPath();
+    ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.7 * Math.PI, .3 * Math.PI);
+    ctx.strokeStyle = "#757575";
+    ctx.stroke();
+  }
+      ctx.beginPath();
+      ctx.arc(Chopper.x + 125, Chopper.y + 35 , 100, 1.9 * Math.PI, .1 * Math.PI);
+      ctx.strokeStyle = "red";
+      ctx.stroke();
+    ctx.restore();
+  }
+  //end SHIELD
 
   
+  
+
+
+
+
+
 
   //FIREBALL LOOP
   for (let fire of fireballs) {
@@ -234,9 +305,13 @@ function startGame() {
     fire.x -= 10;
     if (isCollide(Chopper, fire)) {
       console.log('better luck next time Jack')
-      explosionCrashSound.play();
-      for(let i = 0; i <=8;i++) ctx.drawImage(boom[i],Chopper.x + Chopper.width, Chopper.y);
-      gameOver();
+      deleteObject(fire);
+      playerLife--;
+      if(playerLife == 0){
+        explosionCrashSound.play();
+        for(let i = 0; i <=8;i++) ctx.drawImage(boom[i],Chopper.x + Chopper.width, Chopper.y);
+        gameOver();
+      }
     }
 
     //delete fireball after passes screen
@@ -247,6 +322,7 @@ function startGame() {
 
     //draw missiles and detect collision
     missiles.forEach(e => {
+      
       ctx.drawImage(missile, e.x, e.y);
       e.y += 5;
       if (e.x > myCanvas.width) {
@@ -338,11 +414,22 @@ function startGame() {
   } //end satellite loop
 
 
-  // if missilePacks [] has been filled draw the missilePack
-  // if (missilePacks != []) {
-  //   ctx.drawImage(missilePack, missilePack.x, missilePack.y)
-  //   missilePack.x -= 10;
-  // }
+  //if missilePacks [] has been filled draw the missilePack
+  if (missilePacks != []) {
+    missilePacks.forEach(e=>{
+      ctx.drawImage(missilePackImg, e.x, e.y)
+      e.x -= 10;
+
+      if (isCollide(e, Chopper)) {
+        deleteObject(e);
+        
+        missileCount = missileCount + 10;
+      
+       
+      }
+    });
+
+  }
 
 
   // hit the bottom boundary
@@ -390,85 +477,67 @@ if (Chopper.x >= myCanvas.width) {
 /*======================
      EVENT LISTENERS
 ======================*/
-document.addEventListener('keydown',
-  function (e) {
-    if(isPause) return;
-    switch (e.keyCode) {
-      case 38:
-        //keyCode 38 is arrow up
-        Chopper.y -=30;
-        break;
 
-        case 40:
-        //keyCode 40 is arrow down
-        Chopper.y +=30;
-        break;
+Chopper.prototype = {
+  update: function() {
+    this.respondToUserInput();
+  },
 
-        case 37:
-        //keyCode 37 is arrow left
-        Chopper.x -=5;
-        break;
-
-        case 39:
-        //keyCode 39 is arrow right
-        Chopper.x += 20;  
-        break;
-
-        case 83:
-        // keyCode 83 is 's' for shoot
-        //SHOOT LASER
-        lasers.push(new Laser());
-        laserSound.play();
-        break;
-
-        case 70:
-        //keyCode 70 is 'f' for fire 
-        //FIRE MISSILE
-        if(missileCount==0)break;
-        missiles.push(new Missile());
-        missileSound.play();
-        missileCount--;
-        break;
-
-        case 38: 
-        case 83:
-        //keyCode 39 is arrow right
-        Chopper.x += 20;  
-        // keyCode 76 is 'l' for laser
-        //FIRE LASER
-        lasers.push(new Laser());
-        laserSound.play();
-        break;
-
-        case 40:
-        case 83:
-        //keyCode 40 is arrow down
-        Chopper.y +=30;
-        // keyCode 76 is 'l' for laser
-        //FIRE LASER
-        lasers.push(new Laser());
-        laserSound.play();
-        break;
-
-        case 38:
-        case 83:
-        //keyCode 38 is arrow up
-        Chopper.y -=30;
-        // keyCode 76 is 'l' for laser
-        //FIRE LASER
-        lasers.push(new Laser());
-        laserSound.play();
-        break;
-
-        case 80:
-        //pause game on 'P' key
-        isPause=!isPause;
-        break;
-
-        default:
-        break;
+  respondToUserInput: function() {
+    if (keyboard.isDown(keyboard.KEYS.LEFT)) {
+      
+      this.moveLeft();
+    } else if (keyboard.isDown(keyboard.KEYS.RIGHT)) {
+      this.moveRight();
+    } else if (keyboard.isDown(keyboard.KEYS.UP)) {
+      this.moveUp();
+    } else if (keyboard.isDown(keyboard.KEYS.DOWN)) {
+      this.moveDown();
     }
-  });
+
+    if (keyboard.isDown(keyboard.KEYS.S)) {
+      this.laser();
+    }
+    if (keyboard.isDown(keyboard.KEYS.F)) {
+      this.missile();
+    } else {
+      missileFired = false;
+    }
+  },
+
+  moveLeft: function() {
+    Chopper.x -=2;
+  },
+
+  moveRight: function() {
+    Chopper.x += 5; 
+  },
+
+  moveUp: function() {
+    Chopper.y -=5;
+  },
+  moveDown: function() {
+    Chopper.y +=5;
+  },
+
+  laser: function() {
+    lasers.push(new Laser());
+    laserSound.play();
+  },
+
+  missile: function(){
+    if(missileCount==0)return;
+    if(missileFired) return;
+      missiles.push(new Missile());
+      missileSound.play();
+      missileCount--;
+      missileFired = true;
+  }
+
+};
+
+
+
   //on play click start game
   document.querySelector('#gameStartModal>#close').addEventListener('click',()=>{
     isPause=!isPause;
@@ -502,6 +571,9 @@ function deleteObject(a) {
   } else if (a instanceof Satellite) {
     satellites.splice(satellites.indexOf(a), 1);
     return;
+  }else if (a instanceof MissilePack) {
+    missilePacks.splice(missilePacks.indexOf(a), 1);
+    return;
   }
 }
 function addScore(x){
@@ -526,6 +598,17 @@ function generateFireball(x){
     fireballs.push(f);
   }
 }
+
+//generates Clone
+function generateClone(x){
+  for(let i=0;i<x;i++){
+    let f = new Clone();
+    f.x = (Math.random()*myCanvas.width+200)+myCanvas.width;
+    clones.push(f);
+  }
+}
+
+
 
 //generates Satellites
 function generateSatellite(x){
@@ -565,6 +648,11 @@ function playGameSong(){
   !isPause ? themeMusic.play() : themeMusic.pause();
 }
 
+function generateClone500() {
+  clone500 = Math.floor(Math.random() * 500);
+  // plusOrMinus = -plusOrMinus;
+
+}
   
 
 //make it rain
