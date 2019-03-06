@@ -73,7 +73,6 @@ function Clone() {
   this.width = clone.width;
 }
 
-
 //satellite object
 function Satellite() {
   this.x = myCanvas.width;
@@ -105,6 +104,15 @@ function MissilePack() {
   this.height = missilePackImg.height;
   this.width = missilePackImg.width;
 }
+
+//shield pack object
+function ShieldPack() {
+  this.x = myCanvas.width;
+  this.y = Math.random() * myCanvas.height;
+  this.height = shieldPackImg.height;
+  this.width = shieldPackImg.width;
+}
+
 
 //laser object
 function Laser() {
@@ -163,6 +171,7 @@ let fireball = new Image();
 let satelliteImg = new Image();
 let explosion = new Image();
 let missilePackImg = new Image();
+let shieldPackImg = new Image();
 let clone = new Image();
 let keyboard = new Keyboard();
 var boom = [];
@@ -183,6 +192,7 @@ let fireballs = [];
 let satellites = [];
 let missiles = [];
 let missilePacks = [];
+let shieldPacks = [];
 let lasers = [];
 let clones = [];
 let isPause = true;
@@ -195,13 +205,12 @@ let missileFired = false;
 //image sources
 missile.src = "assets/missile.png";
 laser.src = "assets/laser.png";
-// helicopter.src = "assets/apache.png";
 helicopter.src = "assets/Valor-class_cruiser.png";
 clone.src = "assets/Valor-class_cruiser.png";
 satelliteImg.src = "assets/satellite.png";
-
 fireball.src = "assets/fireball.png";
 missilePackImg.src = "assets/ballistic_missile.png";
+shieldPackImg.src = "assets/shield.png";
 for(let i =0; i<=8;i++) boom[i].src=`assets/regularExplosion0${i}.png`;
 for(let i =0; i<=8;i++) sonicBoom[i].src=`assets/sonicExplosion0${i}.png`;
   
@@ -222,6 +231,8 @@ setInterval(()=>{
     generateSatellite(1);
   }else if(score>25 && missileCount < 2){
     generateMissilePack(1); 
+  } else if (playerLife < 2) {
+    generateShieldPack(1);
   }else{
     generateFireball(1);
     generateSatellite(1);
@@ -238,19 +249,22 @@ function startGame() {
   
   Chopper.prototype.update();
   
-
-
   //change background as score increases
   if(score>100)  myCanvas.style.backgroundImage = "url('../assets/heartNebula.jpg')";
+  // if(score>250) makeItRain();
+  // if(score>450) stopRain();
   if(score>500) myCanvas.style.backgroundImage = "url('../assets/crabNebula.png')";
-  if(score>100) myCanvas.style.backgroundImage = "url('../assets/neonNebula.jpg')";
+  // if(score>750) makeItRain();
+  // if(score>850) stopRain();
+  if(score>1000) myCanvas.style.backgroundImage = "url('../assets/neonNebula.jpg')";
+  // if(score>1500) makeItRain();
+  // if(score>1750) stopRain();
   if(score>2000) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
 
   playGameSong();
 
   generateClone500();
-  // console.log(clone500);
-  // console.log(plusOrMinus);
+  
   if(clone500 == 42) {
     generateClone(1);
     console.log('clone500 should have fired');
@@ -258,6 +272,8 @@ function startGame() {
   
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   cx.clearRect(0,0,myCanvas.width,myCanvas.height);
+  
+
 
   background.draw(ctx);
   
@@ -290,11 +306,6 @@ function startGame() {
   }
   //end SHIELD
 
-  
-  
-
-
-
 
 
 
@@ -324,7 +335,7 @@ function startGame() {
     missiles.forEach(e => {
       
       ctx.drawImage(missile, e.x, e.y);
-      e.y += 5;
+      e.y += 5 * plusOrMinus;
       if (e.x > myCanvas.width) {
         deleteObject(e);
       }
@@ -419,17 +430,24 @@ function startGame() {
     missilePacks.forEach(e=>{
       ctx.drawImage(missilePackImg, e.x, e.y)
       e.x -= 10;
-
       if (isCollide(e, Chopper)) {
         deleteObject(e);
-        
         missileCount = missileCount + 10;
-      
-       
       }
     });
-
   }
+
+//if shieldPacks [] has been filled draw the shieldPack
+if (shieldPacks != []) {
+  shieldPacks.forEach(e=>{
+    ctx.drawImage(shieldPackImg, e.x, e.y)
+    e.x -= 10;
+    if (isCollide(e, Chopper)) {
+      deleteObject(e);
+      playerLife = 4;
+    }
+  });
+}
 
 
   // hit the bottom boundary
@@ -487,11 +505,14 @@ Chopper.prototype = {
     if (keyboard.isDown(keyboard.KEYS.LEFT)) {
       
       this.moveLeft();
-    } else if (keyboard.isDown(keyboard.KEYS.RIGHT)) {
+    } 
+    if (keyboard.isDown(keyboard.KEYS.RIGHT)) {
       this.moveRight();
-    } else if (keyboard.isDown(keyboard.KEYS.UP)) {
+    }
+    if (keyboard.isDown(keyboard.KEYS.UP)) {
       this.moveUp();
-    } else if (keyboard.isDown(keyboard.KEYS.DOWN)) {
+    }
+    if (keyboard.isDown(keyboard.KEYS.DOWN)) {
       this.moveDown();
     }
 
@@ -574,7 +595,11 @@ function deleteObject(a) {
   }else if (a instanceof MissilePack) {
     missilePacks.splice(missilePacks.indexOf(a), 1);
     return;
+  }else if (a instanceof ShieldPack) {
+    shieldPacks.splice(shieldPacks.indexOf(a), 1);
+    return;
   }
+
 }
 function addScore(x){
   score+=x;
@@ -586,6 +611,7 @@ function refresh(){
   missileCount =10;
   fireballs=[];
   missilePacks = [];
+  shieldPacks = [];
   Chopper.x = 250;
   Chopper.y = 150;
 }
@@ -629,6 +655,16 @@ function generateMissilePack(x){
   }
 }
 
+//generates shieldPack
+function generateShieldPack(x){
+  for(let i=0;i<x;i++){
+    let f = new ShieldPack();
+    f.x = (Math.random()*myCanvas.width+200)+myCanvas.width;
+    shieldPacks.push(f);
+  }
+}
+
+
 
 //game over
 function gameOver(){
@@ -650,13 +686,13 @@ function playGameSong(){
 
 function generateClone500() {
   clone500 = Math.floor(Math.random() * 500);
-  // plusOrMinus = -plusOrMinus;
+  plusOrMinus = -plusOrMinus;
 
 }
   
 
 //make it rain
-
+let myVar;
 function makeItRain() {
   var w = myWeatherCanvas.width;
   var h = myWeatherCanvas.height;
@@ -666,6 +702,7 @@ function makeItRain() {
   var init = [];
   var maxParts = 1000;
 
+ 
   for(var a = 0; a < maxParts; a++) {
     init.push({
       x: Math.random() * w,
@@ -705,8 +742,13 @@ function makeItRain() {
     }
   }
 
-  setInterval(draw, 30);
+  myVar = setInterval(draw, 30);
   }; // end of rain
+
+  function stopRain(){
+    clearInterval(myVar)
+    weatherContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
+  }
 
 // startGame()
 startGame();
