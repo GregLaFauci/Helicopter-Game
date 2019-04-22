@@ -2,23 +2,14 @@
 /*======================
         OBJECTS
 ======================*/
-//default object for background util
-const DEFAULTS = {
-  X_POS: 0,
-  Y_POS: 0,
-  WIDTH: 1400,
-  HEIGHT: 1000,
-  SPEED: -1
-};
-
 //background object
 class Background {
-  constructor(options = {}) {
-    this.xPos = DEFAULTS.X_POS;
-    this.yPos = DEFAULTS.Y_POS;
-    this.width = DEFAULTS.WIDTH;
-    this.height = DEFAULTS.HEIGHT;
-    this.speed = DEFAULTS.SPEED;
+  constructor(_options = {}) {
+    this.xPos = 0;
+    this.yPos = 0;
+    this.width = 1400;
+    this.height = 1000;
+    this.speed = -1;
   }
 
   draw(ctx) {
@@ -57,28 +48,15 @@ class Background {
   }
 }
 
+
 //fireball object
-function Fireball() {
-  this.x = myCanvas.width;
-  this.y = Math.random() * myCanvas.height;
-  this.height = fireball.height;
-  this.width = fireball.width;
-}
-
-//clone object
-function Clone() {
-  this.x = myCanvas.width;
-  this.y = Math.random() * myCanvas.height;
-  this.height = clone.height;
-  this.width = clone.width;
-}
-
-//satellite object
-function Satellite() {
-  this.x = myCanvas.width;
-  this.y = Math.random() * myCanvas.height;
-  this.height = satelliteImg.height;
-  this.width = satelliteImg.width;
+class Fireball {
+  constructor() {
+    this.x = myCanvas.width;
+    this.y = Math.random() * myCanvas.height;
+    this.height = fireball.height;
+    this.width = fireball.width;
+  }
 }
 
 //helicopter object
@@ -89,68 +67,117 @@ let Chopper = {
   width: 130
 };
 
+//clone object
+class Clone {
+  constructor() {
+    this.x = Chopper.x;
+    this.y = Chopper.y - 200;
+    this.height = Chopper.height;
+    this.width = Chopper.width;
+  }
+}
+
+//satellite object
+class Satellite {
+  constructor() {
+    this.x = myCanvas.width;
+    this.y = Math.random() * myCanvas.height;
+    this.height = satelliteImg.height;
+    this.width = satelliteImg.width;
+  }
+}
+
+//laser object
+class Laser {
+  constructor() {
+    this.x = Chopper.x + helicopter.width - 25;
+    this.y = Chopper.y + 40;
+    this.height = laser.height;
+    this.width = laser.width;
+  }
+}
+
+//laserClone object
+class LaserClone {
+  constructor() {
+    this.x = Chopper.x + helicopter.width - 25;
+    this.y = Chopper.y + 240;
+    this.height = laser.height;
+    this.width = laser.width;
+  }
+}
+
 //missile object
-function Missile() {
-  this.x = Chopper.x + helicopter.width - 25;
-  this.y = Chopper.y + 40;
-  this.height = missile.height;
-  this.width = missile.width;
+class Missile {
+  constructor() {
+    this.x = Chopper.x + helicopter.width - 25;
+    this.y = Chopper.y + 40;
+    this.height = missile.height;
+    this.width = missile.width;
+  }
 }
 
 //missile pack object
-function MissilePack() {
-  this.x = myCanvas.width;
-  this.y = Math.random() * myCanvas.height;
-  this.height = missilePackImg.height;
-  this.width = missilePackImg.width;
+class MissilePack {
+  constructor() {
+    this.x = myCanvas.width;
+    this.y = Math.random() * myCanvas.height;
+    this.height = missilePackImg.height;
+    this.width = missilePackImg.width;
+  }
 }
 
 //shield pack object
-function ShieldPack() {
-  this.x = myCanvas.width;
-  this.y = Math.random() * myCanvas.height;
-  this.height = shieldPackImg.height;
-  this.width = shieldPackImg.width;
+class ShieldPack {
+  constructor() {
+    this.x = myCanvas.width;
+    this.y = Math.random() * myCanvas.height;
+    this.height = shieldPackImg.height;
+    this.width = shieldPackImg.width;
+  }
+}
+
+//clone pack object
+class ClonePack {
+  constructor() {
+    this.x = myCanvas.width;
+    this.y = Math.random() * myCanvas.height;
+    this.height = clonePackImg.height;
+    this.width = clonePackImg.width;
+  }
 }
 
 
-//laser object
-function Laser() {
-  this.x = Chopper.x + helicopter.width - 25;
-  this.y = Chopper.y + 40;
-  this.height = laser.height;
-  this.width = laser.width;
-}
+
 
 //keyboard construction
-function Keyboard() {
-  var keyState = {};
-
-  window.addEventListener("keydown", function(e) {
-    // e.preventDefault();
-    keyState[e.keyCode] = true;
-  });
-
-  window.addEventListener("keyup", function(e) {
-    // e.preventDefault();
-    keyState[e.keyCode] = false;
-    e.keyCode == 80 ? isPause = !isPause : null;
-  });
-
-  this.isDown = function(keyCode) {
-    return keyState[keyCode] === true;
-  };
-
-  this.KEYS = { LEFT: 37, 
-                RIGHT: 39, 
-                UP: 38, 
-                DOWN: 40, 
-                S: 83, 
-                F: 70,
-                P: 80 
-              
-              };
-};
+class Keyboard {
+  constructor() {
+    var keyState = {};
+    window.addEventListener("keydown", function (e) {
+      // e.preventDefault();
+      keyState[e.keyCode] = true;
+    });
+    window.addEventListener("keyup", function (e) {
+      // e.preventDefault();
+      keyState[e.keyCode] = false;
+      e.keyCode == 80 ? isPause = !isPause : null;
+    });
+    this.isDown = function (keyCode) {
+      return keyState[keyCode] === true;
+    };
+    this.KEYS = {
+    LEFT: 37,
+      RIGHT: 39,
+      UP: 38,
+      DOWN: 40,
+      S: 83,
+      F: 70,
+      P: 80
+    };
+  }
+}
+;
 
 /*======================
     GLOBAL VARIABLES
@@ -165,6 +192,7 @@ let weatherContext = myWeatherCanvas.getContext('2d');
 //object instantiation
 let background = new Background();
 let helicopter = new Image();
+let clone = new Image();
 let missile = new Image();
 let laser = new Image();
 let fireball = new Image();
@@ -172,12 +200,16 @@ let satelliteImg = new Image();
 let explosion = new Image();
 let missilePackImg = new Image();
 let shieldPackImg = new Image();
-let clone = new Image();
+let clonePackImg = new Image();
 let keyboard = new Keyboard();
 var boom = [];
 for(let i = 0; i <= 8; i++) boom[i] = new Image();
 var sonicBoom = [];
 for(let i = 0; i <= 8; i++) sonicBoom[i] = new Image();
+
+
+
+
 let themeMusic = new Audio("assets/themeMusic.mp3");
 let laserSound = new Audio("assets/Laser_Machine_Gun.mp3");
 let missileSound = new Audio("assets/MissileFireWar.mp3");
@@ -193,26 +225,33 @@ let satellites = [];
 let missiles = [];
 let missilePacks = [];
 let shieldPacks = [];
+let clonePacks = [];
 let lasers = [];
+let lasersCloned = [];
 let clones = [];
 let isPause = true;
 let start,stop, clone500;
 let plusOrMinus= 1;
 let playerLife = 4;
 let missileFired = false;
+let cloned = false;
 
 
 //image sources
 missile.src = "assets/missile.png";
 laser.src = "assets/laser.png";
 helicopter.src = "assets/Valor-class_cruiser.png";
-clone.src = "assets/Valor-class_cruiser.png";
+clone.src = helicopter.src;
 satelliteImg.src = "assets/satellite.png";
 fireball.src = "assets/fireball.png";
 missilePackImg.src = "assets/ballistic_missile.png";
 shieldPackImg.src = "assets/shield.png";
+clonePackImg.src = "assets/clone.png";
 for(let i =0; i<=8;i++) boom[i].src=`assets/regularExplosion0${i}.png`;
 for(let i =0; i<=8;i++) sonicBoom[i].src=`assets/sonicExplosion0${i}.png`;
+
+
+
   
 
 //starts shooting fireballs
@@ -233,7 +272,10 @@ setInterval(()=>{
     generateMissilePack(1); 
   } else if (playerLife < 2) {
     generateShieldPack(1);
-  }else{
+  } else if (score > 2) {
+    generateClonePack(1);
+  }
+  else{
     generateFireball(1);
     generateSatellite(1);
   }
@@ -263,21 +305,16 @@ function startGame() {
 
   playGameSong();
 
-  generateClone500();
-  
-  if(clone500 == 42) {
-    generateClone(1);
-    console.log('clone500 should have fired');
-  }
-  
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   cx.clearRect(0,0,myCanvas.width,myCanvas.height);
   
-
-
   background.draw(ctx);
   
   ctx.drawImage(helicopter, Chopper.x, Chopper.y);
+
+  if(cloned == true){
+    ctx.drawImage(helicopter, Chopper.x, Chopper.y + 200 );
+  }
 
   //draw SHIELD  
   if(playerLife > 1){
@@ -349,10 +386,28 @@ function startGame() {
         addScore(10);
       }
     });
+    if(cloned == true) {
+      lasersCloned.forEach(e => {
+        ctx.drawImage(laser, e.x, e.y);
+  
+        if (e.x > myCanvas.width) {
+          deleteObject(e);
+        }
+        e.x += 10;
+        if (isCollide(e, fire)) {
+          for(let i = 0; i <=8;i++) ctx.drawImage(sonicBoom[i],fire.x, fire.y);
+          explosionMissileSound.play();
+          deleteObject(e);
+          deleteObject(fire);
+          addScore(5);
+        }
+      });
+    }
 
     //draw lasers and detect collision
     lasers.forEach(e => {
       ctx.drawImage(laser, e.x, e.y);
+
       if (e.x > myCanvas.width) {
         deleteObject(e);
       }
@@ -449,6 +504,21 @@ if (shieldPacks != []) {
   });
 }
 
+//if clonePacks [] has been filled draw the clonePack
+if (clonePacks != []) {
+  clonePacks.forEach(e=>{
+    ctx.drawImage(clonePackImg, e.x, e.y)
+    e.x -= 10;
+    if (isCollide(e, Chopper)) {
+      deleteObject(e);
+      cloned = true;
+      
+      
+    }
+  });
+}
+
+
 
   // hit the bottom boundary
   if (Chopper.y + 50 >= myCanvas.height) {
@@ -543,6 +613,7 @@ Chopper.prototype = {
 
   laser: function() {
     lasers.push(new Laser());
+    if(cloned == true) lasers.push(new LaserClone());
     laserSound.play();
   },
 
@@ -598,6 +669,9 @@ function deleteObject(a) {
   }else if (a instanceof ShieldPack) {
     shieldPacks.splice(shieldPacks.indexOf(a), 1);
     return;
+  }else if (a instanceof ClonePack) {
+    clonePacks.splice(clonePacks.indexOf(a), 1);
+    return;
   }
 
 }
@@ -612,6 +686,7 @@ function refresh(){
   fireballs=[];
   missilePacks = [];
   shieldPacks = [];
+  clonePacks = [];
   Chopper.x = 250;
   Chopper.y = 150;
 }
@@ -625,14 +700,6 @@ function generateFireball(x){
   }
 }
 
-//generates Clone
-function generateClone(x){
-  for(let i=0;i<x;i++){
-    let f = new Clone();
-    f.x = (Math.random()*myCanvas.width+200)+myCanvas.width;
-    clones.push(f);
-  }
-}
 
 
 
@@ -664,6 +731,14 @@ function generateShieldPack(x){
   }
 }
 
+//generates ClonePack
+function generateClonePack(x){
+  for(let i=0;i<x;i++){
+    let f = new ClonePack();
+    f.x = (Math.random()*myCanvas.width+200)+myCanvas.width;
+    clonePacks.push(f);
+  }
+}
 
 
 //game over
