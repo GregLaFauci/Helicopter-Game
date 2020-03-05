@@ -216,6 +216,8 @@ let missileSound = new Audio("assets/MissileFireWar.mp3");
 let explosionCrashSound = new Audio("assets/Explosion_Crash.mp3");
 let explosionMissileSound = new Audio("assets/BigBomb.mp3");
 //variable declaration
+var localStorageName = 'spaceforcepewpew';
+var highScore;
 let gravity = 1.5;
 var gForce = .3;
 let score = 0;
@@ -235,6 +237,9 @@ let plusOrMinus= 1;
 let playerLife = 4;
 let missileFired = false;
 let cloned = false;
+
+
+
 
 
 //image sources
@@ -290,6 +295,8 @@ setInterval(()=>{
 function startGame() {
   
   Chopper.prototype.update();
+
+  highScore = localStorage.getItem(localStorageName) == null ? 0 : localStorage.getItem(localStorageName);
   
   //change background as score increases
   if(score>100)  myCanvas.style.backgroundImage = "url('../assets/heartNebula.jpg')";
@@ -556,7 +563,8 @@ if (Chopper.x >= myCanvas.width) {
 
   cx.font = "26px Verdana";
   cx.fillStyle = "#FFFFFF";
-  cx.fillText("Score : " + score, myCanvas.width - 150, myCanvas.height - 20);
+  cx.fillText("High Score : " + highScore, myCanvas.width - 550, myCanvas.height - 20);
+  cx.fillText("Score : " + score, myCanvas.width - 250, myCanvas.height - 20);
   cx.fillText("Missiles : " + missileCount, 50, myCanvas.height - 20);
 
   start = requestAnimationFrame(startGame);
@@ -689,6 +697,7 @@ function refresh(){
   clonePacks = [];
   Chopper.x = 250;
   Chopper.y = 150;
+  startGame()
 }
 
 //generates Fireballs
@@ -743,12 +752,15 @@ function generateClonePack(x){
 
 //game over
 function gameOver(){
+  highScore = Math.max(score, highScore);
+  localStorage.setItem(localStorageName, highScore);
   cancelAnimationFrame(start);
   cx.clearRect(0,0,myCanvas.width,myCanvas.height);
   cx.font = "40px Verdana";
   cx.fillStyle = "#FF0000";
-  cx.fillText("GAME OVER!!", myCanvas.width/2-200, myCanvas.height/3);
-  cx.fillText("Score : " + score, myCanvas.width/2-200, myCanvas.height/2);
+  cx.fillText("GAME OVER!!", myCanvas.width/2-200, myCanvas.height/4);
+  cx.fillText("Your score : " + score, myCanvas.width/2-200, myCanvas.height/3);
+  cx.fillText("Best score : " + highScore, myCanvas.width/2-200, myCanvas.height/2);
   cx.fillStyle = "#00FF00";
   cx.fillRect(myCanvas.width/2+100,myCanvas.height/2+150,100,50);
   isPause = true;
@@ -765,6 +777,13 @@ function generateClone500() {
 
 }
   
+function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
 
 //make it rain
 let myVar;
