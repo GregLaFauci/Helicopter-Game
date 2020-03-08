@@ -278,7 +278,10 @@ setInterval(()=>{
   } else if (playerLife < 2) {
     generateShieldPack(1);
   } else if (score > 2) {
-    generateClonePack(1);
+    if (cloned == false ) {
+      generateClonePack(1);
+    }
+    pass;
   }
   else{
     generateFireball(1);
