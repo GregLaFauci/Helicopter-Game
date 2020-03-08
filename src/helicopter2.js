@@ -300,14 +300,14 @@ function startGame() {
   
   //change background as score increases
   if(score>100)  myCanvas.style.backgroundImage = "url('../assets/heartNebula.jpg')";
-  // if(score>250) makeItRain();
-  // if(score>450) stopRain();
+  if(score>250) makeItRain();
+  if(score>450) stopRain();
   if(score>500) myCanvas.style.backgroundImage = "url('../assets/crabNebula.png')";
-  // if(score>750) makeItRain();
-  // if(score>850) stopRain();
+  if(score>750) makeItRain();
+  if(score>850) stopRain();
   if(score>1000) myCanvas.style.backgroundImage = "url('../assets/neonNebula.jpg')";
-  // if(score>1500) makeItRain();
-  // if(score>1750) stopRain();
+  if(score>1500) makeItRain();
+  if(score>1750) stopRain();
   if(score>2000) myCanvas.style.backgroundImage = "url('../assets/nebula.jpg')";
 
   playGameSong();
